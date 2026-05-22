@@ -35,9 +35,6 @@
         .header h1 {
             font-size: 1.5rem;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .search-card {
@@ -195,6 +192,57 @@
             cursor: not-allowed;
         }
 
+        .sort-settings {
+            margin: 12px 0;
+            text-align: right;
+        }
+
+        .sort-toggle {
+            background: none;
+            border: none;
+            color: #64748b;
+            font-size: 0.7rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
+        .sort-toggle:hover {
+            background: #e2e8f0;
+        }
+
+        .sort-panel {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            display: none;
+        }
+
+        .sort-panel.open {
+            display: block;
+        }
+
+        .sort-panel label {
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+        }
+
+        .sort-panel input {
+            padding: 6px 10px;
+            font-size: 0.75rem;
+            width: 80px;
+        }
+
+        .sort-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
         .results-header {
             display: flex;
             justify-content: space-between;
@@ -291,10 +339,17 @@
             font-weight: 500;
         }
 
+        .score-badge {
+            background: #e2e8f0;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            color: #64748b;
+        }
+
         .expand-icon {
             font-size: 1.2rem;
             color: #64748b;
-            transition: transform 0.2s;
         }
 
         .trajet-details {
@@ -489,7 +544,7 @@
         footer {
             text-align: center;
             font-size: 0.7rem;
-            color: #94a3b8;
+            color: #64748b;
             margin-top: 24px;
             padding: 16px;
             border-top: 1px solid #e2e8f0;
@@ -502,12 +557,6 @@
 
         footer a:hover {
             text-decoration: underline;
-        }
-
-        .disclaimer {
-            font-size: 0.65rem;
-            margin-top: 8px;
-            color: #cbd5e1;
         }
     </style>
 </head>
@@ -536,7 +585,7 @@
             <button class="mode-btn" id="modeDepartBtn">🚀 Partir après</button>
         </div>
 
-        <div class="form-group" id="timeField">
+        <div class="form-group">
             <label id="timeLabel">⏰ Arriver avant</label>
             <div class="time-row-buttons">
                 <input type="time" id="timeValue">
@@ -546,7 +595,21 @@
 
         <div class="checkbox-group">
             <input type="checkbox" id="allowTransfers" checked>
-            <label>✅ Inclure les trajets avec correspondances (changement de bus)</label>
+            <label>✅ Inclure les correspondances</label>
+        </div>
+
+        <div class="sort-settings">
+            <button class="sort-toggle" id="sortToggle">⚙️ Options de tri</button>
+            <div class="sort-panel" id="sortPanel">
+                <div class="sort-row">
+                    <label>Coefficient écart horaire</label>
+                    <input type="number" id="coeffEcart" value="3" step="0.5" min="0" max="10">
+                </div>
+                <div class="sort-row">
+                    <label>Coefficient durée trajet</label>
+                    <input type="number" id="coeffDuree" value="1" step="0.5" min="0" max="10">
+                </div>
+            </div>
         </div>
 
         <button class="btn-primary" id="btnRechercher" disabled>🔍 Rechercher les trajets</button>
@@ -557,9 +620,9 @@
     </div>
 
     <footer>
-        <div>© MAIRE Anael - Tous droits réservés</div>
-        <div>Horaires officiels : <a href="https://www.ville-embrun.fr/navette-gratuite-embrun" target="_blank">www.ville-embrun.fr/navette-gratuite-embrun</a></div>
-        <div class="disclaimer">⚠️ Les horaires sont donnés à titre indicatif. Aucune responsabilité ne pourra être engagée en cas de retard, modification ou suppression des services.</div>
+        <a href="https://www.ville-embrun.fr/navette-gratuite-embrun" target="_blank">📄 Horaires officiels (PDF)</a><br>
+        © MAIRE Anael - Tous droits réservés<br>
+        <span style="font-size:0.65rem;">⚠️ Les horaires sont donnés à titre indicatif. Aucune responsabilité ne pourra être engagée en cas de retard ou modification.</span>
     </footer>
 </div>
 
@@ -569,6 +632,8 @@
     let allSolutions = [];
     let displayedCount = 0;
     let currentMode = 'arrival';
+    let coeffEcart = 3;
+    let coeffDuree = 1;
     const STEP = 4;
 
     function updateURL(tripIndex = null) {
@@ -651,7 +716,7 @@
             
             loadFromURL();
         } catch(e) {
-            document.getElementById('resultsArea').innerHTML = '<div class="empty-state">❌ Erreur: horaires.json manquant</div>';
+            document.getElementById('resultsArea').innerHTML = '<div class="empty-state">❌ Erreur: fichier horaires.json manquant</div>';
         }
     }
 
@@ -761,6 +826,7 @@
                                 arriveeTime: toTime(arrivalMin),
                                 departureMin: depMin,
                                 arrivalMin: arrivalMin,
+                                duration: arrivalMin - depMin,
                                 intermediateStops: sens.arrets.slice(idxDep + 1, idxArr),
                                 idxDep: idxDep,
                                 idxArr: idxArr
@@ -836,6 +902,7 @@
                                                         arriveeTime: toTime(finalMin),
                                                         departureMin: depMin,
                                                         arrivalMin: finalMin,
+                                                        duration: finalMin - depMin,
                                                         firstIntermediateStops: sens1.arrets.slice(idxDep + 1, i),
                                                         secondIntermediateStops: sens2.arrets.slice(idxTrans + 1, idxArr2),
                                                         idxDep1: idxDep,
@@ -890,6 +957,7 @@
                                 departTime: depTime,
                                 arriveeTime: toTime(arrivalMin),
                                 arrivalMin: arrivalMin,
+                                duration: arrivalMin - depMin,
                                 intermediateStops: sens.arrets.slice(idxDep + 1, idxArr),
                                 idxDep: idxDep,
                                 idxArr: idxArr
@@ -963,6 +1031,7 @@
                                                         transferDepartTime: transDepTime,
                                                         arriveeTime: toTime(finalMin),
                                                         arrivalMin: finalMin,
+                                                        duration: finalMin - depMin,
                                                         firstIntermediateStops: sens1.arrets.slice(idxDep + 1, i),
                                                         secondIntermediateStops: sens2.arrets.slice(idxTrans + 1, idxArr2),
                                                         idxDep1: idxDep,
@@ -986,36 +1055,42 @@
         return trips;
     }
 
-    function findBestTrips(depart, arrivee, timeMinutes, mode, includeTransfers) {
+    function computeScore(trip, targetTime, mode, coeffEcartVal, coeffDureeVal) {
+        let ecartMinutes = 0;
+        if (mode === 'arrival') {
+            ecartMinutes = Math.abs(trip.arrivalMin - targetTime);
+        } else {
+            ecartMinutes = Math.abs(trip.departureMin - targetTime);
+        }
+        let score = ecartMinutes * coeffEcartVal;
+        score += trip.duration * coeffDureeVal;
+        return score;
+    }
+
+    function findBestTrips(depart, arrivee, timeMinutes, mode, includeTransfers, coeffEcartVal, coeffDureeVal) {
+        let all = [];
         if (mode === 'departure') {
             let directs = findDirectTripsByDeparture(depart, arrivee, timeMinutes);
-            let all = [...directs];
+            all = [...directs];
             if (includeTransfers) {
                 let transfers = findTransferTripsByDeparture(depart, arrivee, timeMinutes);
                 all = [...all, ...transfers];
             }
-            all.sort((a, b) => {
-                let diffA = Math.abs(a.departureMin - timeMinutes);
-                let diffB = Math.abs(b.departureMin - timeMinutes);
-                if (diffA === diffB) return a.departureMin - b.departureMin;
-                return diffA - diffB;
-            });
-            return all;
         } else {
             let directs = findDirectTripsByArrival(depart, arrivee, timeMinutes);
-            let all = [...directs];
+            all = [...directs];
             if (includeTransfers) {
                 let transfers = findTransferTripsByArrival(depart, arrivee, timeMinutes);
                 all = [...all, ...transfers];
             }
-            all.sort((a, b) => {
-                let diffA = Math.abs(a.arrivalMin - timeMinutes);
-                let diffB = Math.abs(b.arrivalMin - timeMinutes);
-                if (diffA === diffB) return a.arrivalMin - b.arrivalMin;
-                return diffA - diffB;
-            });
-            return all;
         }
+        
+        for (let trip of all) {
+            trip.score = computeScore(trip, timeMinutes, mode, coeffEcartVal, coeffDureeVal);
+        }
+        
+        all.sort((a, b) => a.score - b.score);
+        return all;
     }
 
     function getLigneClass(ligneId) {
@@ -1122,7 +1197,7 @@
         let html = `
             <div class="results-header">
                 <h2>🎯 ${trips.length} trajet(s) trouvé(s)</h2>
-                <span class="badge-count">Triés par proximité</span>
+                <span class="badge-count">Triés par pertinence (score bas = meilleur)</span>
             </div>
         `;
         
@@ -1133,15 +1208,17 @@
             const uniqueId = `trip-${idx}-${Date.now()}`;
             const globalIndex = idx;
             const isHighlighted = (highlightTripIndex !== null && globalIndex === highlightTripIndex);
+            const scoreDisplay = Math.round(trip.score);
             
             if (trip.type === 'direct') {
                 const detailedStops = getDetailedStops(trip.sens, trip.departStation, trip.arriveeStation, trip.departTime);
                 html += `
-                    <div class="trajet-card" data-id="${uniqueId}" style="${isHighlighted ? 'border: 2px solid #f59e0b; box-shadow: 0 0 0 2px #fef3c7;' : ''}">
+                    <div class="trajet-card" style="${isHighlighted ? 'border: 2px solid #f59e0b; box-shadow: 0 0 0 2px #fef3c7;' : ''}">
                         <div class="trajet-header direct" onclick="toggleDetails('${uniqueId}')">
                             <div class="header-info">
                                 <span class="ligne-badge ${getLigneClass(trip.ligneId)}">🚌 ${trip.ligneNom}</span>
                                 <span class="time-summary">Départ ${trip.departTime} → Arrivée ${trip.arriveeTime}</span>
+                                <span class="score-badge">📊 ${scoreDisplay} pts</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <button class="share-btn" onclick="shareTrip(${globalIndex}, event)">📤 Partager</button>
@@ -1167,13 +1244,14 @@
             } else {
                 const { stops1, stops2 } = getDetailedStopsForTransfer(trip);
                 html += `
-                    <div class="trajet-card" data-id="${uniqueId}" style="${isHighlighted ? 'border: 2px solid #f59e0b; box-shadow: 0 0 0 2px #fef3c7;' : ''}">
+                    <div class="trajet-card" style="${isHighlighted ? 'border: 2px solid #f59e0b; box-shadow: 0 0 0 2px #fef3c7;' : ''}">
                         <div class="trajet-header transfer" onclick="toggleDetails('${uniqueId}')">
                             <div class="header-info">
                                 <span class="ligne-badge ${getLigneClass(trip.ligne1Id)}">🚌 ${trip.ligne1Nom}</span>
                                 <span style="color: #f59e0b;">→</span>
                                 <span class="ligne-badge ${getLigneClass(trip.ligne2Id)}">🚌 ${trip.ligne2Nom}</span>
                                 <span class="time-summary">Départ ${trip.departTime} → Arrivée ${trip.arriveeTime}</span>
+                                <span class="score-badge">📊 ${scoreDisplay} pts</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <button class="share-btn" onclick="shareTrip(${globalIndex}, event)">📤 Partager</button>
@@ -1229,9 +1307,9 @@
         });
         
         if (highlightTripIndex !== null && highlightTripIndex < toShow.length) {
-            const highlightedCard = document.querySelector(`.trajet-card[style*="border: 2px solid #f59e0b"]`);
-            if (highlightedCard) {
-                highlightedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const cards = document.querySelectorAll('.trajet-card');
+            if (cards[highlightTripIndex]) {
+                cards[highlightTripIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
     }
@@ -1275,7 +1353,10 @@
             return;
         }
         
-        allSolutions = findBestTrips(depart, arrivee, timeMinutes, currentMode, includeTransfers);
+        coeffEcart = parseFloat(document.getElementById('coeffEcart').value) || 3;
+        coeffDuree = parseFloat(document.getElementById('coeffDuree').value) || 1;
+        
+        allSolutions = findBestTrips(depart, arrivee, timeMinutes, currentMode, includeTransfers, coeffEcart, coeffDuree);
         displayedCount = STEP;
         displayTrips(allSolutions, timeValue, currentMode, highlightTripIndex);
         
@@ -1309,6 +1390,23 @@
                 search();
             } else {
                 updateURL();
+            }
+        });
+        
+        document.getElementById('sortToggle').addEventListener('click', () => {
+            const panel = document.getElementById('sortPanel');
+            panel.classList.toggle('open');
+        });
+        
+        document.getElementById('coeffEcart').addEventListener('change', () => {
+            if (document.getElementById('selectDepart').value && document.getElementById('selectArrivee').value) {
+                search();
+            }
+        });
+        
+        document.getElementById('coeffDuree').addEventListener('change', () => {
+            if (document.getElementById('selectDepart').value && document.getElementById('selectArrivee').value) {
+                search();
             }
         });
         
