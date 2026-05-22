@@ -19,7 +19,7 @@
         }
 
         .app {
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
         }
 
@@ -96,6 +96,27 @@
             min-width: 120px;
         }
 
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 16px 0 8px;
+            padding: 10px 0;
+        }
+
+        .checkbox-group input {
+            width: 20px;
+            height: 20px;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
         .btn-primary {
             background: #1e5f7a;
             color: white;
@@ -135,30 +156,12 @@
             color: #1e3a5f;
         }
 
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-nav {
+        .badge-count {
             background: #e2e8f0;
-            border: none;
-            padding: 8px 16px;
+            padding: 4px 12px;
             border-radius: 30px;
             font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
             color: #1e3a5f;
-        }
-
-        .btn-nav:hover {
-            background: #cbd5e1;
-        }
-
-        .btn-nav:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
         }
 
         /* Carte trajet */
@@ -177,9 +180,8 @@
         }
 
         .trajet-header {
-            background: #f8fafc;
             padding: 14px 18px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 2px solid #e2e8f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -187,17 +189,37 @@
             gap: 10px;
         }
 
-        .ligne-badge {
-            background: #1e3a5f;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            font-weight: 600;
+        .trajet-header.direct {
+            background: #e8f4f8;
+            border-left: 5px solid #1e5f7a;
         }
 
-        .ligne-badge.second {
+        .trajet-header.transfer {
+            background: #fef3e8;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .ligne-badge {
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .ligne-badge.l1 {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .ligne-badge.l2 {
             background: #2c7da0;
+            color: white;
+        }
+
+        .ligne-badge.transfer-icon {
+            background: #f59e0b;
+            color: white;
+            font-size: 0.7rem;
         }
 
         .trajet-body {
@@ -208,9 +230,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 12px;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 16px;
         }
 
         .time-box {
@@ -226,8 +251,8 @@
         }
 
         .time-value {
-            font-size: 1.4rem;
-            font-weight: 700;
+            font-size: 1.5rem;
+            font-weight: 800;
             color: #1e3a5f;
         }
 
@@ -240,32 +265,85 @@
         .stations {
             background: #f1f5f9;
             border-radius: 16px;
-            padding: 12px;
+            padding: 14px;
             margin: 12px 0;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
         .station-start {
-            font-weight: 700;
+            font-weight: 800;
             color: #1e5f7a;
+            background: #e0f2fe;
+            padding: 2px 8px;
+            border-radius: 20px;
+            display: inline-block;
         }
 
         .station-end {
-            font-weight: 700;
+            font-weight: 800;
             color: #1e5f7a;
+            background: #e0f2fe;
+            padding: 2px 8px;
+            border-radius: 20px;
+            display: inline-block;
         }
 
         .station-inter {
             color: #475569;
         }
 
-        .correspondance-info {
+        .transfer-box {
             background: #fef3c7;
+            border-radius: 14px;
+            padding: 14px;
+            margin: 14px 0;
             border-left: 4px solid #f59e0b;
-            border-radius: 12px;
-            padding: 10px 12px;
-            margin-top: 12px;
-            font-size: 0.8rem;
+        }
+
+        .transfer-title {
+            font-weight: 700;
+            color: #d97706;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .transfer-details {
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        .transfer-details strong {
+            color: #b45309;
+        }
+
+        .safety-margin {
+            font-size: 0.7rem;
+            color: #f59e0b;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .btn-load-more {
+            background: white;
+            border: 2px solid #1e5f7a;
+            color: #1e5f7a;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 40px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+
+        .btn-load-more:hover {
+            background: #1e5f7a;
+            color: white;
         }
 
         .empty-state {
@@ -290,18 +368,17 @@
             padding: 16px;
         }
 
-        @media (max-width: 500px) {
-            .time-value { font-size: 1.1rem; }
-            .trajet-header { flex-direction: column; align-items: flex-start; }
+        hr {
+            margin: 12px 0;
+            border: none;
+            border-top: 1px dashed #cbd5e1;
         }
     </style>
 </head>
 <body>
 <div class="app">
     <div class="header">
-        <h1>
-            🚌 Navette municipale
-        </h1>
+        <h1>🚌 Navette municipale</h1>
         <p>Lignes 1 & 2 • Recherche par heure d'arrivée • Correspondances automatiques</p>
     </div>
 
@@ -324,23 +401,28 @@
                 <input type="time" id="heureArrivee" value="12:00">
             </div>
         </div>
+        
+        <div class="checkbox-group">
+            <input type="checkbox" id="allowTransfers" checked>
+            <label>✅ Inclure les trajets avec correspondances (changement de bus)</label>
+        </div>
+        
         <button class="btn-primary" id="btnRechercher" disabled>🔍 Rechercher les trajets</button>
     </div>
 
     <div id="resultsArea">
         <div class="loading">⏳ Chargement des horaires...</div>
     </div>
-    <footer>⚠️ Marge de sécurité de 5 min pour les correspondances • Arrivées les plus proches de l'heure demandée</footer>
+    <footer>⚠️ Marge de sécurité de 5 min pour les correspondances • Trajets triés par proximité avec l'heure demandée</footer>
 </div>
 
 <script>
     let data = null;
     let allStations = [];
-    let currentSolutions = [];
-    let currentOffset = 0;
-    const PAGE_SIZE = 4;
+    let allSolutions = [];
+    let displayedCount = 0;
+    const STEP = 4;
 
-    // Chargement du JSON
     async function loadData() {
         try {
             const response = await fetch('horaires.json');
@@ -348,7 +430,6 @@
             data = await response.json();
             allStations = data.arrets || [];
             
-            // Remplir les select
             const selectD = document.getElementById('selectDepart');
             const selectA = document.getElementById('selectArrivee');
             selectD.innerHTML = '<option value="">-- Choisir départ --</option>';
@@ -380,7 +461,6 @@
         return `${h.toString().padStart(2, '0')}:${mn.toString().padStart(2, '0')}`;
     }
 
-    // Trouver tous les trajets directs
     function findDirectTrips(depart, arrivee, maxArrivalMinutes) {
         let trips = [];
         for (let ligne of data.lignes) {
@@ -392,7 +472,6 @@
                     if (!depTimes) continue;
                     for (let depTime of depTimes) {
                         let depMin = toMinutes(depTime);
-                        // Trouver l'heure d'arrivée réelle (premier horaire à l'arrêt arrivée >= départ)
                         const arrTimes = sens.horaires[arrivee];
                         let arrivalMin = null;
                         for (let arrTime of arrTimes) {
@@ -405,7 +484,8 @@
                         if (arrivalMin !== null && arrivalMin <= maxArrivalMinutes) {
                             trips.push({
                                 type: 'direct',
-                                ligne: ligne.nom,
+                                ligneId: ligne.id,
+                                ligneNom: ligne.nom,
                                 direction: sens.direction,
                                 departStation: depart,
                                 arriveeStation: arrivee,
@@ -422,11 +502,9 @@
         return trips;
     }
 
-    // Trouver les trajets avec correspondance (marge de sécurité 5 min)
-    // UNIQUEMENT entre lignes différentes, et seulement si mieux que le meilleur direct
-    function findTransferTrips(depart, arrivee, maxArrivalMinutes, bestDirectArrival) {
+    function findTransferTrips(depart, arrivee, maxArrivalMinutes) {
         let trips = [];
-        const SAFETY_MARGIN = 5; // 5 minutes de marge
+        const SAFETY_MARGIN = 5;
         
         for (let ligne1 of data.lignes) {
             for (let sens1 of ligne1.sens) {
@@ -438,10 +516,8 @@
                 for (let depTime of depTimes) {
                     let depMin = toMinutes(depTime);
                     
-                    // Parcourir les arrêts intermédiaires comme points de correspondance
                     for (let i = idxDep + 1; i < sens1.arrets.length; i++) {
                         let transferStation = sens1.arrets[i];
-                        // Heure d'arrivée à la correspondance
                         const transferArrTimes = sens1.horaires[transferStation];
                         if (!transferArrTimes) continue;
                         let transferArrivalMin = null;
@@ -454,9 +530,8 @@
                         }
                         if (transferArrivalMin === null) continue;
                         
-                        // Chercher ligne 2 (différente de ligne1)
                         for (let ligne2 of data.lignes) {
-                            if (ligne2.id === ligne1.id) continue; // Pas de correspondance sur même ligne
+                            if (ligne2.id === ligne1.id) continue;
                             for (let sens2 of ligne2.sens) {
                                 const idxTrans = sens2.arrets.indexOf(transferStation);
                                 const idxArr2 = sens2.arrets.indexOf(arrivee);
@@ -465,31 +540,28 @@
                                     if (!transferDepTimes) continue;
                                     for (let transDepTime of transferDepTimes) {
                                         let transDepMin = toMinutes(transDepTime);
-                                        // MARGE DE SÉCURITÉ : au moins 5 min après l'arrivée
                                         if (transDepMin >= transferArrivalMin + SAFETY_MARGIN) {
-                                            // Trouver l'arrivée finale
                                             const finalArrTimes = sens2.horaires[arrivee];
                                             for (let finalTime of finalArrTimes) {
                                                 let finalMin = toMinutes(finalTime);
                                                 if (finalMin >= transDepMin && finalMin <= maxArrivalMinutes) {
-                                                    // Ne garder que si c'est mieux que le meilleur direct (ou pas de direct)
-                                                    if (bestDirectArrival === null || finalMin < bestDirectArrival) {
-                                                        trips.push({
-                                                            type: 'transfer',
-                                                            ligne1: ligne1.nom,
-                                                            ligne2: ligne2.nom,
-                                                            transferStation: transferStation,
-                                                            departStation: depart,
-                                                            arriveeStation: arrivee,
-                                                            departTime: depTime,
-                                                            transferArrivalTime: toTime(transferArrivalMin),
-                                                            transferDepartTime: transDepTime,
-                                                            arriveeTime: toTime(finalMin),
-                                                            arrivalMin: finalMin,
-                                                            firstIntermediateStops: sens1.arrets.slice(idxDep + 1, i),
-                                                            secondIntermediateStops: sens2.arrets.slice(idxTrans + 1, idxArr2)
-                                                        });
-                                                    }
+                                                    trips.push({
+                                                        type: 'transfer',
+                                                        ligne1Id: ligne1.id,
+                                                        ligne1Nom: ligne1.nom,
+                                                        ligne2Id: ligne2.id,
+                                                        ligne2Nom: ligne2.nom,
+                                                        transferStation: transferStation,
+                                                        departStation: depart,
+                                                        arriveeStation: arrivee,
+                                                        departTime: depTime,
+                                                        transferArrivalTime: toTime(transferArrivalMin),
+                                                        transferDepartTime: transDepTime,
+                                                        arriveeTime: toTime(finalMin),
+                                                        arrivalMin: finalMin,
+                                                        firstIntermediateStops: sens1.arrets.slice(idxDep + 1, i),
+                                                        secondIntermediateStops: sens2.arrets.slice(idxTrans + 1, idxArr2)
+                                                    });
                                                     break;
                                                 }
                                             }
@@ -506,43 +578,32 @@
         return trips;
     }
 
-    // Regrouper les solutions et trier par proximité avec l'heure cible
-    function findBestTrips(depart, arrivee, targetArrivalMinutes) {
-        // 1. Trouver tous les directs
-        let allTrips = findDirectTrips(depart, arrivee, 1440); // d'abord sans limite pour calculer le meilleur direct
+    function findBestTrips(depart, arrivee, targetArrivalMinutes, includeTransfers) {
+        let directs = findDirectTrips(depart, arrivee, targetArrivalMinutes);
+        let all = [...directs];
         
-        // 2. Meilleur direct (arrivée la plus proche possible, même après l'heure cible)
-        let bestDirectArrival = null;
-        let viableDirects = [];
-        for (let trip of allTrips) {
-            if (bestDirectArrival === null || trip.arrivalMin < bestDirectArrival) {
-                bestDirectArrival = trip.arrivalMin;
-            }
-            if (trip.arrivalMin <= targetArrivalMinutes) {
-                viableDirects.push(trip);
-            }
+        if (includeTransfers) {
+            let transfers = findTransferTrips(depart, arrivee, targetArrivalMinutes);
+            all = [...all, ...transfers];
         }
         
-        // 3. Correspondances (uniquement si meilleures que le meilleur direct)
-        let transfers = findTransferTrips(depart, arrivee, targetArrivalMinutes, bestDirectArrival);
-        
-        // 4. Combiner toutes les solutions
-        let allSolutions = [...viableDirects, ...transfers];
-        
-        // 5. Trier par PROXIMITÉ avec l'heure cible (plus proche = meilleur)
-        allSolutions.sort((a, b) => {
+        all.sort((a, b) => {
             let diffA = Math.abs(a.arrivalMin - targetArrivalMinutes);
             let diffB = Math.abs(b.arrivalMin - targetArrivalMinutes);
             if (diffA === diffB) return a.arrivalMin - b.arrivalMin;
             return diffA - diffB;
         });
         
-        return allSolutions;
+        return all;
     }
 
-    // Affichage des trajets
+    function getLigneClass(ligneId) {
+        return ligneId === 'L1' ? 'l1' : 'l2';
+    }
+
     function displayTrips(trips, targetTimeStr) {
         const container = document.getElementById('resultsArea');
+        
         if (!trips.length) {
             container.innerHTML = `<div class="empty-state">⏰ Aucun trajet permettant d'arriver avant ${targetTimeStr}<br>Essayez une heure plus tardive</div>`;
             return;
@@ -551,38 +612,38 @@
         let html = `
             <div class="results-header">
                 <h2>🎯 ${trips.length} trajet(s) trouvé(s)</h2>
-                <div class="nav-buttons">
-                    <button class="btn-nav" id="btnEarlier" ${currentOffset === 0 ? 'disabled' : ''}>⏪ Arriver plus tôt</button>
-                    <button class="btn-nav" id="btnLater" ${currentOffset + PAGE_SIZE >= trips.length ? 'disabled' : ''}>Arriver plus tard ⏩</button>
-                </div>
+                <span class="badge-count">Triés par proximité</span>
             </div>
         `;
         
-        const pageTrips = trips.slice(currentOffset, currentOffset + PAGE_SIZE);
+        const toShow = trips.slice(0, displayedCount);
         
-        for (let trip of pageTrips) {
+        for (let trip of toShow) {
             if (trip.type === 'direct') {
                 html += `
                     <div class="trajet-card">
-                        <div class="trajet-header">
-                            <span class="ligne-badge">🚌 ${trip.ligne}</span>
-                            <span>🚏 Direct • ${trip.intermediateStops.length} arrêt(s)</span>
+                        <div class="trajet-header direct">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <span class="ligne-badge ${getLigneClass(trip.ligneId)}">🚌 ${trip.ligneNom}</span>
+                                <span style="font-size: 0.75rem; color: #1e5f7a;">✓ Trajet direct</span>
+                            </div>
+                            <span>🚏 ${trip.intermediateStops.length} arrêt(s) intermédiaire(s)</span>
                         </div>
                         <div class="trajet-body">
                             <div class="time-row">
                                 <div class="time-box">
-                                    <div class="time-label">Départ</div>
+                                    <div class="time-label">Départ de ${trip.departStation}</div>
                                     <div class="time-value">${trip.departTime}</div>
                                 </div>
                                 <div class="arrow">→</div>
                                 <div class="time-box">
-                                    <div class="time-label">Arrivée</div>
+                                    <div class="time-label">Arrivée à ${trip.arriveeStation}</div>
                                     <div class="time-value">${trip.arriveeTime}</div>
                                 </div>
                             </div>
                             <div class="stations">
                                 <span class="station-start">🚉 ${trip.departStation}</span>
-                                ${trip.intermediateStops.length ? `<br>⬇️ ${trip.intermediateStops.join(' → ')}` : ''}
+                                ${trip.intermediateStops.length ? `<br>⬇️ ${trip.intermediateStops.join(' → ')}` : '<br>⬇️ Aucun arrêt intermédiaire'}
                                 <br><span class="station-end">🏁 ${trip.arriveeStation}</span>
                             </div>
                         </div>
@@ -591,33 +652,51 @@
             } else {
                 html += `
                     <div class="trajet-card">
-                        <div class="trajet-header">
-                            <span class="ligne-badge">🚌 ${trip.ligne1}</span>
-                            <span>→</span>
-                            <span class="ligne-badge second">🚌 ${trip.ligne2}</span>
-                            <span>🔄 1 correspondance</span>
+                        <div class="trajet-header transfer">
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                <span class="ligne-badge ${getLigneClass(trip.ligne1Id)}">🚌 ${trip.ligne1Nom}</span>
+                                <span style="color: #f59e0b;">→</span>
+                                <span class="ligne-badge ${getLigneClass(trip.ligne2Id)}">🚌 ${trip.ligne2Nom}</span>
+                                <span class="ligne-badge transfer-icon">🔄 1 correspondance</span>
+                            </div>
                         </div>
                         <div class="trajet-body">
                             <div class="time-row">
                                 <div class="time-box">
-                                    <div class="time-label">Départ</div>
+                                    <div class="time-label">Départ de ${trip.departStation}</div>
                                     <div class="time-value">${trip.departTime}</div>
                                 </div>
                                 <div class="arrow">→</div>
                                 <div class="time-box">
-                                    <div class="time-label">Arrivée</div>
+                                    <div class="time-label">Arrivée à ${trip.arriveeStation}</div>
                                     <div class="time-value">${trip.arriveeTime}</div>
                                 </div>
                             </div>
+                            
                             <div class="stations">
                                 <span class="station-start">🚉 ${trip.departStation}</span>
                                 ${trip.firstIntermediateStops.length ? `<br>⬇️ ${trip.firstIntermediateStops.join(' → ')}` : ''}
-                                <br><span class="station-inter">🔄 Correspondance à ${trip.transferStation} (arrivée ${trip.transferArrivalTime}, départ ${trip.transferDepartTime})</span>
+                            </div>
+                            
+                            <div class="transfer-box">
+                                <div class="transfer-title">
+                                    🔄 CHANGEMENT DE BUS
+                                </div>
+                                <div class="transfer-details">
+                                    📍 <strong>Arrêt de correspondance : ${trip.transferStation}</strong><br>
+                                    ⏱️ Arrivée du 1er bus : <strong>${trip.transferArrivalTime}</strong><br>
+                                    ⏱️ Départ du 2ème bus : <strong>${trip.transferDepartTime}</strong><br>
+                                    🚌 Changer de la ligne <strong>${trip.ligne1Nom}</strong> → <strong>${trip.ligne2Nom}</strong>
+                                </div>
+                                <div class="safety-margin">
+                                    ⏰ Marge de sécurité : 5 minutes minimum entre les bus
+                                </div>
+                            </div>
+                            
+                            <div class="stations">
+                                <span class="station-start">🚉 ${trip.transferStation} (départ)</span>
                                 ${trip.secondIntermediateStops.length ? `<br>⬇️ ${trip.secondIntermediateStops.join(' → ')}` : ''}
                                 <br><span class="station-end">🏁 ${trip.arriveeStation}</span>
-                            </div>
-                            <div class="correspondance-info">
-                                ⏱️ Marge de sécurité : 5 minutes entre les bus
                             </div>
                         </div>
                     </div>
@@ -625,20 +704,15 @@
             }
         }
         
+        if (displayedCount < trips.length) {
+            html += `<button class="btn-load-more" id="btnLoadMore">📋 Charger ${Math.min(STEP, trips.length - displayedCount)} trajet(s) supplémentaire(s)</button>`;
+        }
+        
         container.innerHTML = html;
         
-        // Réattacher les événements
-        document.getElementById('btnEarlier')?.addEventListener('click', () => {
-            if (currentOffset - PAGE_SIZE >= 0) {
-                currentOffset -= PAGE_SIZE;
-                displayTrips(currentSolutions, document.getElementById('heureArrivee').value);
-            }
-        });
-        document.getElementById('btnLater')?.addEventListener('click', () => {
-            if (currentOffset + PAGE_SIZE < currentSolutions.length) {
-                currentOffset += PAGE_SIZE;
-                displayTrips(currentSolutions, document.getElementById('heureArrivee').value);
-            }
+        document.getElementById('btnLoadMore')?.addEventListener('click', () => {
+            displayedCount += STEP;
+            displayTrips(trips, targetTimeStr);
         });
     }
     
@@ -646,6 +720,7 @@
         const depart = document.getElementById('selectDepart').value;
         const arrivee = document.getElementById('selectArrivee').value;
         const targetTime = document.getElementById('heureArrivee').value;
+        const includeTransfers = document.getElementById('allowTransfers').checked;
         
         if (!depart || !arrivee) {
             alert('Veuillez sélectionner départ et arrivée');
@@ -662,15 +737,19 @@
             return;
         }
         
-        currentSolutions = findBestTrips(depart, arrivee, targetMinutes);
-        currentOffset = 0;
-        displayTrips(currentSolutions, targetTime);
+        allSolutions = findBestTrips(depart, arrivee, targetMinutes, includeTransfers);
+        displayedCount = STEP;
+        displayTrips(allSolutions, targetTime);
     }
     
-    // Initialisation
     window.addEventListener('DOMContentLoaded', () => {
         loadData();
         document.getElementById('btnRechercher').addEventListener('click', search);
+        document.getElementById('allowTransfers').addEventListener('change', () => {
+            if (document.getElementById('selectDepart').value && document.getElementById('selectArrivee').value) {
+                search();
+            }
+        });
     });
 </script>
 </body>
