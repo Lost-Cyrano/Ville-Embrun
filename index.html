@@ -23,7 +23,6 @@
             margin: 0 auto;
         }
 
-        /* En-tête */
         .header {
             background: linear-gradient(135deg, #1e3a5f 0%, #0f2c4a 100%);
             color: white;
@@ -47,7 +46,6 @@
             margin-top: 8px;
         }
 
-        /* Carte de recherche */
         .search-card {
             background: white;
             border-radius: 28px;
@@ -96,6 +94,68 @@
             min-width: 120px;
         }
 
+        .mode-switch {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            background: #f1f5f9;
+            padding: 6px;
+            border-radius: 40px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+        }
+
+        .mode-btn.active {
+            background: #1e5f7a;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .mode-btn:not(.active) {
+            color: #64748b;
+        }
+
+        .mode-btn:not(.active):hover {
+            background: #e2e8f0;
+        }
+
+        .time-row-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .time-row-buttons input {
+            flex: 2;
+        }
+
+        .btn-now {
+            background: #e2e8f0;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 24px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            color: #1e3a5f;
+        }
+
+        .btn-now:hover {
+            background: #cbd5e1;
+        }
+
         .checkbox-group {
             display: flex;
             align-items: center;
@@ -141,7 +201,6 @@
             cursor: not-allowed;
         }
 
-        /* Résultats */
         .results-header {
             display: flex;
             justify-content: space-between;
@@ -164,7 +223,6 @@
             color: #1e3a5f;
         }
 
-        /* Carte trajet */
         .trajet-card {
             background: white;
             border-radius: 20px;
@@ -175,13 +233,13 @@
         }
 
         .trajet-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .trajet-header {
-            padding: 14px 18px;
-            border-bottom: 2px solid #e2e8f0;
+            padding: 16px 18px;
+            cursor: pointer;
+            transition: background 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -190,13 +248,17 @@
         }
 
         .trajet-header.direct {
-            background: #e8f4f8;
+            background: #f8fafc;
             border-left: 5px solid #1e5f7a;
         }
 
         .trajet-header.transfer {
-            background: #fef3e8;
+            background: #f8fafc;
             border-left: 5px solid #f59e0b;
+        }
+
+        .trajet-header:hover {
+            background: #f1f5f9;
         }
 
         .ligne-badge {
@@ -207,12 +269,12 @@
         }
 
         .ligne-badge.l1 {
-            background: #1e3a5f;
+            background: #2563eb;
             color: white;
         }
 
         .ligne-badge.l2 {
-            background: #2c7da0;
+            background: #e11d48;
             color: white;
         }
 
@@ -222,8 +284,38 @@
             font-size: 0.7rem;
         }
 
-        .trajet-body {
+        .header-info {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .time-summary {
+            font-size: 0.9rem;
+            color: #1e3a5f;
+            font-weight: 500;
+        }
+
+        .expand-icon {
+            font-size: 1.2rem;
+            color: #64748b;
+            transition: transform 0.2s;
+        }
+
+        .trajet-details {
+            padding: 0 18px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #ffffff;
+            border-top: 1px solid transparent;
+        }
+
+        .trajet-details.open {
+            max-height: 2000px;
             padding: 18px;
+            border-top: 1px solid #e2e8f0;
         }
 
         .time-row {
@@ -234,7 +326,7 @@
             flex-wrap: wrap;
             gap: 12px;
             background: #f8fafc;
-            padding: 12px;
+            padding: 16px;
             border-radius: 16px;
         }
 
@@ -262,35 +354,60 @@
             padding: 0 8px;
         }
 
-        .stations {
+        .stations-list {
             background: #f1f5f9;
             border-radius: 16px;
             padding: 14px;
             margin: 12px 0;
             font-size: 0.9rem;
-            line-height: 1.6;
+            line-height: 1.8;
         }
 
-        .station-start {
-            font-weight: 800;
-            color: #1e5f7a;
-            background: #e0f2fe;
-            padding: 2px 8px;
-            border-radius: 20px;
-            display: inline-block;
+        .station-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0;
+            border-bottom: 1px dashed #cbd5e1;
         }
 
-        .station-end {
-            font-weight: 800;
-            color: #1e5f7a;
-            background: #e0f2fe;
-            padding: 2px 8px;
-            border-radius: 20px;
-            display: inline-block;
+        .station-item:last-child {
+            border-bottom: none;
         }
 
-        .station-inter {
-            color: #475569;
+        .station-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+        }
+
+        .station-dot.start {
+            background: #22c55e;
+            width: 10px;
+            height: 10px;
+        }
+
+        .station-dot.end {
+            background: #ef4444;
+            width: 10px;
+            height: 10px;
+        }
+
+        .station-dot.transfer {
+            background: #f59e0b;
+            width: 10px;
+            height: 10px;
+        }
+
+        .station-name {
+            flex: 1;
+        }
+
+        .station-time {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-family: monospace;
         }
 
         .transfer-box {
@@ -325,6 +442,21 @@
             color: #f59e0b;
             margin-top: 8px;
             font-style: italic;
+        }
+
+        .share-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-left: 8px;
+            color: #1e3a5f;
+        }
+
+        .share-btn:hover {
+            background: #cbd5e1;
         }
 
         .btn-load-more {
@@ -367,19 +499,13 @@
             margin-top: 24px;
             padding: 16px;
         }
-
-        hr {
-            margin: 12px 0;
-            border: none;
-            border-top: 1px dashed #cbd5e1;
-        }
     </style>
 </head>
 <body>
 <div class="app">
     <div class="header">
         <h1>🚌 Navette municipale</h1>
-        <p>Lignes 1 & 2 • Recherche par heure d'arrivée • Correspondances automatiques</p>
+        <p>Lignes 1 & 2 • Mode départ ou arrivée • Partagez un trajet spécifique</p>
     </div>
 
     <div class="search-card">
@@ -395,25 +521,32 @@
                 <option>Chargement...</option>
             </select>
         </div>
-        <div class="row-2">
-            <div>
-                <label>⏰ Arriver avant</label>
-                <input type="time" id="heureArrivee" value="12:00">
+
+        <div class="mode-switch">
+            <button class="mode-btn" id="modeArriveeBtn">⏰ Arriver avant</button>
+            <button class="mode-btn" id="modeDepartBtn">🚀 Partir après</button>
+        </div>
+
+        <div class="form-group" id="timeField">
+            <label id="timeLabel">⏰ Arriver avant</label>
+            <div class="time-row-buttons">
+                <input type="time" id="timeValue">
+                <button class="btn-now" id="btnNow">🕐 Maintenant</button>
             </div>
         </div>
-        
+
         <div class="checkbox-group">
             <input type="checkbox" id="allowTransfers" checked>
             <label>✅ Inclure les trajets avec correspondances (changement de bus)</label>
         </div>
-        
+
         <button class="btn-primary" id="btnRechercher" disabled>🔍 Rechercher les trajets</button>
     </div>
 
     <div id="resultsArea">
         <div class="loading">⏳ Chargement des horaires...</div>
     </div>
-    <footer>⚠️ Marge de sécurité de 5 min pour les correspondances • Trajets triés par proximité avec l'heure demandée</footer>
+    <footer>⚠️ Marge de sécurité de 5 min pour les correspondances • Cliquez sur un trajet pour voir les détails • <strong>Partagez un trajet via le bouton 📤</strong></footer>
 </div>
 
 <script>
@@ -421,7 +554,67 @@
     let allStations = [];
     let allSolutions = [];
     let displayedCount = 0;
+    let currentMode = 'arrival';
     const STEP = 4;
+
+    // Gestion de l'URL
+    function updateURL(tripIndex = null) {
+        const depart = document.getElementById('selectDepart').value;
+        const arrivee = document.getElementById('selectArrivee').value;
+        const timeValue = document.getElementById('timeValue').value;
+        const mode = currentMode;
+        const transfers = document.getElementById('allowTransfers').checked;
+        
+        const params = new URLSearchParams();
+        if (depart) params.set('depart', depart);
+        if (arrivee) params.set('arrivee', arrivee);
+        if (timeValue) params.set('time', timeValue);
+        params.set('mode', mode);
+        params.set('transfers', transfers ? '1' : '0');
+        if (tripIndex !== null && tripIndex !== undefined) {
+            params.set('trip', tripIndex);
+        }
+        
+        const newURL = `${window.location.pathname}?${params.toString()}`;
+        window.history.pushState({}, '', newURL);
+    }
+
+    function loadFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const depart = params.get('depart');
+        const arrivee = params.get('arrivee');
+        const time = params.get('time');
+        const mode = params.get('mode');
+        const transfers = params.get('transfers');
+        const tripIndex = params.get('trip');
+        
+        if (depart && allStations.includes(depart)) {
+            document.getElementById('selectDepart').value = depart;
+        }
+        if (arrivee && allStations.includes(arrivee)) {
+            document.getElementById('selectArrivee').value = arrivee;
+        }
+        if (time && time.match(/^\d{2}:\d{2}$/)) {
+            document.getElementById('timeValue').value = time;
+        }
+        if (mode === 'departure') {
+            setMode('departure', false);
+        } else {
+            setMode('arrival', false);
+        }
+        if (transfers === '0') {
+            document.getElementById('allowTransfers').checked = false;
+        } else if (transfers === '1') {
+            document.getElementById('allowTransfers').checked = true;
+        }
+        
+        // Si tout est rempli, lancer la recherche
+        if (depart && arrivee && time) {
+            setTimeout(() => {
+                search(tripIndex ? parseInt(tripIndex) : null);
+            }, 500);
+        }
+    }
 
     async function loadData() {
         try {
@@ -443,10 +636,44 @@
             document.getElementById('selectArrivee').disabled = false;
             document.getElementById('btnRechercher').disabled = false;
             document.getElementById('resultsArea').innerHTML = '<div class="empty-state">📅 Sélectionnez départ, arrivée et heure</div>';
+            
+            loadFromURL();
         } catch(e) {
             console.error(e);
             document.getElementById('resultsArea').innerHTML = '<div class="empty-state">❌ Erreur: horaires.json manquant</div>';
         }
+    }
+
+    function setMode(mode, doSearch = false) {
+        currentMode = mode;
+        const modeArriveeBtn = document.getElementById('modeArriveeBtn');
+        const modeDepartBtn = document.getElementById('modeDepartBtn');
+        const timeLabel = document.getElementById('timeLabel');
+        
+        if (mode === 'arrival') {
+            modeArriveeBtn.classList.add('active');
+            modeDepartBtn.classList.remove('active');
+            timeLabel.innerHTML = '⏰ Arriver avant';
+        } else {
+            modeDepartBtn.classList.add('active');
+            modeArriveeBtn.classList.remove('active');
+            timeLabel.innerHTML = '🚀 Partir après';
+        }
+        
+        if (doSearch) {
+            updateURL();
+            if (document.getElementById('selectDepart').value && document.getElementById('selectArrivee').value) {
+                search();
+            }
+        }
+    }
+
+    function setNow() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('timeValue').value = `${hours}:${minutes}`;
+        updateURL();
     }
 
     function toMinutes(t) {
@@ -461,7 +688,169 @@
         return `${h.toString().padStart(2, '0')}:${mn.toString().padStart(2, '0')}`;
     }
 
-    function findDirectTrips(depart, arrivee, maxArrivalMinutes) {
+    function getDetailedStops(sens, depart, arrivee, actualDepartTime) {
+        const idxDep = sens.arrets.indexOf(depart);
+        const idxArr = sens.arrets.indexOf(arrivee);
+        const depMin = toMinutes(actualDepartTime);
+        const stops = [];
+        
+        for (let i = idxDep; i <= idxArr; i++) {
+            const stopName = sens.arrets[i];
+            const times = sens.horaires[stopName];
+            let stopTime = null;
+            if (times) {
+                for (let t of times) {
+                    const tMin = toMinutes(t);
+                    if (tMin >= depMin) {
+                        stopTime = t;
+                        break;
+                    }
+                }
+            }
+            stops.push({
+                name: stopName,
+                time: stopTime,
+                isStart: i === idxDep,
+                isEnd: i === idxArr
+            });
+        }
+        return stops;
+    }
+
+    // Mode départ
+    function findDirectTripsByDeparture(depart, arrivee, minDepartureMinutes) {
+        let trips = [];
+        for (let ligne of data.lignes) {
+            for (let sens of ligne.sens) {
+                const idxDep = sens.arrets.indexOf(depart);
+                const idxArr = sens.arrets.indexOf(arrivee);
+                if (idxDep !== -1 && idxArr !== -1 && idxDep < idxArr) {
+                    const depTimes = sens.horaires[depart];
+                    if (!depTimes) continue;
+                    for (let depTime of depTimes) {
+                        let depMin = toMinutes(depTime);
+                        if (depMin < minDepartureMinutes) continue;
+                        const arrTimes = sens.horaires[arrivee];
+                        let arrivalMin = null;
+                        for (let arrTime of arrTimes) {
+                            let aMin = toMinutes(arrTime);
+                            if (aMin >= depMin) {
+                                arrivalMin = aMin;
+                                break;
+                            }
+                        }
+                        if (arrivalMin !== null) {
+                            trips.push({
+                                type: 'direct',
+                                ligneId: ligne.id,
+                                ligneNom: ligne.nom,
+                                sens: sens,
+                                departStation: depart,
+                                arriveeStation: arrivee,
+                                departTime: depTime,
+                                arriveeTime: toTime(arrivalMin),
+                                departureMin: depMin,
+                                arrivalMin: arrivalMin,
+                                intermediateStops: sens.arrets.slice(idxDep + 1, idxArr),
+                                idxDep: idxDep,
+                                idxArr: idxArr
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        return trips;
+    }
+
+    function findTransferTripsByDeparture(depart, arrivee, minDepartureMinutes) {
+        let trips = [];
+        const SAFETY_MARGIN = 5;
+        
+        for (let ligne1 of data.lignes) {
+            for (let sens1 of ligne1.sens) {
+                const idxDep = sens1.arrets.indexOf(depart);
+                if (idxDep === -1) continue;
+                const depTimes = sens1.horaires[depart];
+                if (!depTimes) continue;
+                
+                for (let depTime of depTimes) {
+                    let depMin = toMinutes(depTime);
+                    if (depMin < minDepartureMinutes) continue;
+                    
+                    for (let i = idxDep + 1; i < sens1.arrets.length; i++) {
+                        let transferStation = sens1.arrets[i];
+                        const transferArrTimes = sens1.horaires[transferStation];
+                        if (!transferArrTimes) continue;
+                        let transferArrivalMin = null;
+                        let transferArrivalTime = null;
+                        for (let tTime of transferArrTimes) {
+                            let tMin = toMinutes(tTime);
+                            if (tMin >= depMin) {
+                                transferArrivalMin = tMin;
+                                transferArrivalTime = tTime;
+                                break;
+                            }
+                        }
+                        if (transferArrivalMin === null) continue;
+                        
+                        for (let ligne2 of data.lignes) {
+                            if (ligne2.id === ligne1.id) continue;
+                            for (let sens2 of ligne2.sens) {
+                                const idxTrans = sens2.arrets.indexOf(transferStation);
+                                const idxArr2 = sens2.arrets.indexOf(arrivee);
+                                if (idxTrans !== -1 && idxArr2 !== -1 && idxTrans < idxArr2) {
+                                    const transferDepTimes = sens2.horaires[transferStation];
+                                    if (!transferDepTimes) continue;
+                                    for (let transDepTime of transferDepTimes) {
+                                        let transDepMin = toMinutes(transDepTime);
+                                        if (transDepMin >= transferArrivalMin + SAFETY_MARGIN) {
+                                            const finalArrTimes = sens2.horaires[arrivee];
+                                            for (let finalTime of finalArrTimes) {
+                                                let finalMin = toMinutes(finalTime);
+                                                if (finalMin >= transDepMin) {
+                                                    trips.push({
+                                                        type: 'transfer',
+                                                        ligne1Id: ligne1.id,
+                                                        ligne1Nom: ligne1.nom,
+                                                        sens1: sens1,
+                                                        ligne2Id: ligne2.id,
+                                                        ligne2Nom: ligne2.nom,
+                                                        sens2: sens2,
+                                                        transferStation: transferStation,
+                                                        departStation: depart,
+                                                        arriveeStation: arrivee,
+                                                        departTime: depTime,
+                                                        transferArrivalTime: transferArrivalTime,
+                                                        transferDepartTime: transDepTime,
+                                                        arriveeTime: toTime(finalMin),
+                                                        departureMin: depMin,
+                                                        arrivalMin: finalMin,
+                                                        firstIntermediateStops: sens1.arrets.slice(idxDep + 1, i),
+                                                        secondIntermediateStops: sens2.arrets.slice(idxTrans + 1, idxArr2),
+                                                        idxDep1: idxDep,
+                                                        idxTrans1: i,
+                                                        idxTrans2: idxTrans,
+                                                        idxArr2: idxArr2
+                                                    });
+                                                    break;
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return trips;
+    }
+
+    // Mode arrivée
+    function findDirectTripsByArrival(depart, arrivee, maxArrivalMinutes) {
         let trips = [];
         for (let ligne of data.lignes) {
             for (let sens of ligne.sens) {
@@ -486,13 +875,15 @@
                                 type: 'direct',
                                 ligneId: ligne.id,
                                 ligneNom: ligne.nom,
-                                direction: sens.direction,
+                                sens: sens,
                                 departStation: depart,
                                 arriveeStation: arrivee,
                                 departTime: depTime,
                                 arriveeTime: toTime(arrivalMin),
                                 arrivalMin: arrivalMin,
-                                intermediateStops: sens.arrets.slice(idxDep + 1, idxArr)
+                                intermediateStops: sens.arrets.slice(idxDep + 1, idxArr),
+                                idxDep: idxDep,
+                                idxArr: idxArr
                             });
                         }
                     }
@@ -502,7 +893,7 @@
         return trips;
     }
 
-    function findTransferTrips(depart, arrivee, maxArrivalMinutes) {
+    function findTransferTripsByArrival(depart, arrivee, maxArrivalMinutes) {
         let trips = [];
         const SAFETY_MARGIN = 5;
         
@@ -521,10 +912,12 @@
                         const transferArrTimes = sens1.horaires[transferStation];
                         if (!transferArrTimes) continue;
                         let transferArrivalMin = null;
+                        let transferArrivalTime = null;
                         for (let tTime of transferArrTimes) {
                             let tMin = toMinutes(tTime);
                             if (tMin >= depMin) {
                                 transferArrivalMin = tMin;
+                                transferArrivalTime = tTime;
                                 break;
                             }
                         }
@@ -549,18 +942,24 @@
                                                         type: 'transfer',
                                                         ligne1Id: ligne1.id,
                                                         ligne1Nom: ligne1.nom,
+                                                        sens1: sens1,
                                                         ligne2Id: ligne2.id,
                                                         ligne2Nom: ligne2.nom,
+                                                        sens2: sens2,
                                                         transferStation: transferStation,
                                                         departStation: depart,
                                                         arriveeStation: arrivee,
                                                         departTime: depTime,
-                                                        transferArrivalTime: toTime(transferArrivalMin),
+                                                        transferArrivalTime: transferArrivalTime,
                                                         transferDepartTime: transDepTime,
                                                         arriveeTime: toTime(finalMin),
                                                         arrivalMin: finalMin,
                                                         firstIntermediateStops: sens1.arrets.slice(idxDep + 1, i),
-                                                        secondIntermediateStops: sens2.arrets.slice(idxTrans + 1, idxArr2)
+                                                        secondIntermediateStops: sens2.arrets.slice(idxTrans + 1, idxArr2),
+                                                        idxDep1: idxDep,
+                                                        idxTrans1: i,
+                                                        idxTrans2: idxTrans,
+                                                        idxArr2: idxArr2
                                                     });
                                                     break;
                                                 }
@@ -578,34 +977,138 @@
         return trips;
     }
 
-    function findBestTrips(depart, arrivee, targetArrivalMinutes, includeTransfers) {
-        let directs = findDirectTrips(depart, arrivee, targetArrivalMinutes);
-        let all = [...directs];
-        
-        if (includeTransfers) {
-            let transfers = findTransferTrips(depart, arrivee, targetArrivalMinutes);
-            all = [...all, ...transfers];
+    function findBestTrips(depart, arrivee, timeMinutes, mode, includeTransfers) {
+        if (mode === 'departure') {
+            let directs = findDirectTripsByDeparture(depart, arrivee, timeMinutes);
+            let all = [...directs];
+            if (includeTransfers) {
+                let transfers = findTransferTripsByDeparture(depart, arrivee, timeMinutes);
+                all = [...all, ...transfers];
+            }
+            all.sort((a, b) => {
+                let diffA = Math.abs(a.departureMin - timeMinutes);
+                let diffB = Math.abs(b.departureMin - timeMinutes);
+                if (diffA === diffB) return a.departureMin - b.departureMin;
+                return diffA - diffB;
+            });
+            return all;
+        } else {
+            let directs = findDirectTripsByArrival(depart, arrivee, timeMinutes);
+            let all = [...directs];
+            if (includeTransfers) {
+                let transfers = findTransferTripsByArrival(depart, arrivee, timeMinutes);
+                all = [...all, ...transfers];
+            }
+            all.sort((a, b) => {
+                let diffA = Math.abs(a.arrivalMin - timeMinutes);
+                let diffB = Math.abs(b.arrivalMin - timeMinutes);
+                if (diffA === diffB) return a.arrivalMin - b.arrivalMin;
+                return diffA - diffB;
+            });
+            return all;
         }
-        
-        all.sort((a, b) => {
-            let diffA = Math.abs(a.arrivalMin - targetArrivalMinutes);
-            let diffB = Math.abs(b.arrivalMin - targetArrivalMinutes);
-            if (diffA === diffB) return a.arrivalMin - b.arrivalMin;
-            return diffA - diffB;
-        });
-        
-        return all;
     }
 
     function getLigneClass(ligneId) {
         return ligneId === 'L1' ? 'l1' : 'l2';
     }
 
-    function displayTrips(trips, targetTimeStr) {
+    function getDetailedStopsForTransfer(trip) {
+        const stops1 = [];
+        const depMin = toMinutes(trip.departTime);
+        
+        for (let i = trip.idxDep1; i <= trip.idxTrans1; i++) {
+            const stopName = trip.sens1.arrets[i];
+            const times = trip.sens1.horaires[stopName];
+            let stopTime = null;
+            if (times) {
+                for (let t of times) {
+                    if (toMinutes(t) >= depMin) {
+                        stopTime = t;
+                        break;
+                    }
+                }
+            }
+            stops1.push({
+                name: stopName,
+                time: stopTime,
+                isStart: i === trip.idxDep1,
+                isTransfer: i === trip.idxTrans1
+            });
+        }
+        
+        const stops2 = [];
+        const transferDepMin = toMinutes(trip.transferDepartTime);
+        for (let i = trip.idxTrans2; i <= trip.idxArr2; i++) {
+            const stopName = trip.sens2.arrets[i];
+            const times = trip.sens2.horaires[stopName];
+            let stopTime = null;
+            if (times) {
+                for (let t of times) {
+                    if (toMinutes(t) >= transferDepMin) {
+                        stopTime = t;
+                        break;
+                    }
+                }
+            }
+            stops2.push({
+                name: stopName,
+                time: stopTime,
+                isTransfer: i === trip.idxTrans2,
+                isEnd: i === trip.idxArr2
+            });
+        }
+        
+        return { stops1, stops2 };
+    }
+
+    function renderStopsList(stops, title, lineName) {
+        if (!stops.length) return '';
+        let html = `<div style="margin-top: 12px;"><strong>${title} (${lineName}) :</strong></div><div class="stations-list">`;
+        for (let stop of stops) {
+            let dotClass = 'station-dot';
+            if (stop.isStart) dotClass = 'station-dot start';
+            else if (stop.isEnd) dotClass = 'station-dot end';
+            else if (stop.isTransfer) dotClass = 'station-dot transfer';
+            
+            html += `
+                <div class="station-item">
+                    <div class="${dotClass}"></div>
+                    <div class="station-name">${stop.name}</div>
+                    <div class="station-time">${stop.time || '—'}</div>
+                </div>
+            `;
+        }
+        html += `</div>`;
+        return html;
+    }
+
+    function shareTrip(tripIndex, event) {
+        event.stopPropagation();
+        updateURL(tripIndex);
+        // Copier dans le presse-papier
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+            // Feedback visuel
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = '✅ Copié !';
+            setTimeout(() => {
+                btn.innerText = originalText;
+            }, 2000);
+        }).catch(() => {
+            alert('URL à partager :\n' + url);
+        });
+    }
+
+    function displayTrips(trips, targetTimeStr, mode, highlightTripIndex = null) {
         const container = document.getElementById('resultsArea');
         
         if (!trips.length) {
-            container.innerHTML = `<div class="empty-state">⏰ Aucun trajet permettant d'arriver avant ${targetTimeStr}<br>Essayez une heure plus tardive</div>`;
+            const msg = mode === 'arrival' 
+                ? `⏰ Aucun trajet permettant d'arriver avant ${targetTimeStr}<br>Essayez une heure plus tardive`
+                : `🚀 Aucun trajet partant après ${targetTimeStr}<br>Essayez une heure plus précoce`;
+            container.innerHTML = `<div class="empty-state">${msg}</div>`;
             return;
         }
         
@@ -618,18 +1121,27 @@
         
         const toShow = trips.slice(0, displayedCount);
         
-        for (let trip of toShow) {
+        for (let idx = 0; idx < toShow.length; idx++) {
+            const trip = toShow[idx];
+            const uniqueId = `trip-${idx}-${Date.now()}`;
+            const globalIndex = idx; // index dans la liste affichée (0-based)
+            const isHighlighted = (highlightTripIndex !== null && globalIndex === highlightTripIndex);
+            
             if (trip.type === 'direct') {
+                const detailedStops = getDetailedStops(trip.sens, trip.departStation, trip.arriveeStation, trip.departTime);
                 html += `
-                    <div class="trajet-card">
-                        <div class="trajet-header direct">
-                            <div style="display: flex; gap: 8px; align-items: center;">
+                    <div class="trajet-card" data-id="${uniqueId}" style="${isHighlighted ? 'border: 2px solid #f59e0b; box-shadow: 0 0 0 2px #fef3c7;' : ''}">
+                        <div class="trajet-header direct" onclick="toggleDetails('${uniqueId}')">
+                            <div class="header-info">
                                 <span class="ligne-badge ${getLigneClass(trip.ligneId)}">🚌 ${trip.ligneNom}</span>
-                                <span style="font-size: 0.75rem; color: #1e5f7a;">✓ Trajet direct</span>
+                                <span class="time-summary">Départ ${trip.departTime} → Arrivée ${trip.arriveeTime}</span>
                             </div>
-                            <span>🚏 ${trip.intermediateStops.length} arrêt(s) intermédiaire(s)</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <button class="share-btn" onclick="shareTrip(${globalIndex}, event)">📤 Partager</button>
+                                <div class="expand-icon" id="icon-${uniqueId}">▼</div>
+                            </div>
                         </div>
-                        <div class="trajet-body">
+                        <div class="trajet-details ${isHighlighted ? 'open' : ''}" id="details-${uniqueId}">
                             <div class="time-row">
                                 <div class="time-box">
                                     <div class="time-label">Départ de ${trip.departStation}</div>
@@ -641,26 +1153,27 @@
                                     <div class="time-value">${trip.arriveeTime}</div>
                                 </div>
                             </div>
-                            <div class="stations">
-                                <span class="station-start">🚉 ${trip.departStation}</span>
-                                ${trip.intermediateStops.length ? `<br>⬇️ ${trip.intermediateStops.join(' → ')}` : '<br>⬇️ Aucun arrêt intermédiaire'}
-                                <br><span class="station-end">🏁 ${trip.arriveeStation}</span>
-                            </div>
+                            ${renderStopsList(detailedStops, 'Tous les arrêts', trip.ligneNom)}
                         </div>
                     </div>
                 `;
             } else {
+                const { stops1, stops2 } = getDetailedStopsForTransfer(trip);
                 html += `
-                    <div class="trajet-card">
-                        <div class="trajet-header transfer">
-                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <div class="trajet-card" data-id="${uniqueId}" style="${isHighlighted ? 'border: 2px solid #f59e0b; box-shadow: 0 0 0 2px #fef3c7;' : ''}">
+                        <div class="trajet-header transfer" onclick="toggleDetails('${uniqueId}')">
+                            <div class="header-info">
                                 <span class="ligne-badge ${getLigneClass(trip.ligne1Id)}">🚌 ${trip.ligne1Nom}</span>
                                 <span style="color: #f59e0b;">→</span>
                                 <span class="ligne-badge ${getLigneClass(trip.ligne2Id)}">🚌 ${trip.ligne2Nom}</span>
-                                <span class="ligne-badge transfer-icon">🔄 1 correspondance</span>
+                                <span class="time-summary">Départ ${trip.departTime} → Arrivée ${trip.arriveeTime}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <button class="share-btn" onclick="shareTrip(${globalIndex}, event)">📤 Partager</button>
+                                <div class="expand-icon" id="icon-${uniqueId}">▼</div>
                             </div>
                         </div>
-                        <div class="trajet-body">
+                        <div class="trajet-details ${isHighlighted ? 'open' : ''}" id="details-${uniqueId}">
                             <div class="time-row">
                                 <div class="time-box">
                                     <div class="time-label">Départ de ${trip.departStation}</div>
@@ -673,31 +1186,24 @@
                                 </div>
                             </div>
                             
-                            <div class="stations">
-                                <span class="station-start">🚉 ${trip.departStation}</span>
-                                ${trip.firstIntermediateStops.length ? `<br>⬇️ ${trip.firstIntermediateStops.join(' → ')}` : ''}
-                            </div>
+                            ${renderStopsList(stops1, 'Premier trajet', trip.ligne1Nom)}
                             
                             <div class="transfer-box">
                                 <div class="transfer-title">
                                     🔄 CHANGEMENT DE BUS
                                 </div>
                                 <div class="transfer-details">
-                                    📍 <strong>Arrêt de correspondance : ${trip.transferStation}</strong><br>
+                                    📍 <strong>Arrêt : ${trip.transferStation}</strong><br>
                                     ⏱️ Arrivée du 1er bus : <strong>${trip.transferArrivalTime}</strong><br>
                                     ⏱️ Départ du 2ème bus : <strong>${trip.transferDepartTime}</strong><br>
                                     🚌 Changer de la ligne <strong>${trip.ligne1Nom}</strong> → <strong>${trip.ligne2Nom}</strong>
                                 </div>
                                 <div class="safety-margin">
-                                    ⏰ Marge de sécurité : 5 minutes minimum entre les bus
+                                    ⏰ Marge de sécurité : 5 minutes minimum
                                 </div>
                             </div>
                             
-                            <div class="stations">
-                                <span class="station-start">🚉 ${trip.transferStation} (départ)</span>
-                                ${trip.secondIntermediateStops.length ? `<br>⬇️ ${trip.secondIntermediateStops.join(' → ')}` : ''}
-                                <br><span class="station-end">🏁 ${trip.arriveeStation}</span>
-                            </div>
+                            ${renderStopsList(stops2, 'Deuxième trajet', trip.ligne2Nom)}
                         </div>
                     </div>
                 `;
@@ -712,14 +1218,36 @@
         
         document.getElementById('btnLoadMore')?.addEventListener('click', () => {
             displayedCount += STEP;
-            displayTrips(trips, targetTimeStr);
+            displayTrips(trips, targetTimeStr, mode, highlightTripIndex);
         });
+        
+        // Scroll jusqu'au trajet mis en évidence si présent
+        if (highlightTripIndex !== null && highlightTripIndex < toShow.length) {
+            const highlightedCard = document.querySelector(`.trajet-card[style*="border: 2px solid #f59e0b"]`);
+            if (highlightedCard) {
+                highlightedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
     }
     
-    function search() {
+    window.toggleDetails = function(id) {
+        const details = document.getElementById(`details-${id}`);
+        const icon = document.getElementById(`icon-${id}`);
+        if (details.classList.contains('open')) {
+            details.classList.remove('open');
+            icon.innerHTML = '▼';
+        } else {
+            details.classList.add('open');
+            icon.innerHTML = '▲';
+        }
+    }
+    
+    window.shareTrip = shareTrip;
+    
+    function search(highlightTripIndex = null) {
         const depart = document.getElementById('selectDepart').value;
         const arrivee = document.getElementById('selectArrivee').value;
-        const targetTime = document.getElementById('heureArrivee').value;
+        const timeValue = document.getElementById('timeValue').value;
         const includeTransfers = document.getElementById('allowTransfers').checked;
         
         if (!depart || !arrivee) {
@@ -730,26 +1258,59 @@
             alert('Départ et arrivée doivent être différents');
             return;
         }
+        if (!timeValue) {
+            alert('Veuillez saisir une heure');
+            return;
+        }
         
-        const targetMinutes = toMinutes(targetTime);
-        if (targetMinutes === -1) {
+        const timeMinutes = toMinutes(timeValue);
+        if (timeMinutes === -1) {
             alert('Heure invalide');
             return;
         }
         
-        allSolutions = findBestTrips(depart, arrivee, targetMinutes, includeTransfers);
+        allSolutions = findBestTrips(depart, arrivee, timeMinutes, currentMode, includeTransfers);
         displayedCount = STEP;
-        displayTrips(allSolutions, targetTime);
+        displayTrips(allSolutions, timeValue, currentMode, highlightTripIndex);
+        
+        // Mettre à jour l'URL sans l'index si on est en train de faire une nouvelle recherche
+        if (highlightTripIndex === null) {
+            updateURL();
+        }
     }
     
+    // Event listeners
     window.addEventListener('DOMContentLoaded', () => {
         loadData();
-        document.getElementById('btnRechercher').addEventListener('click', search);
-        document.getElementById('allowTransfers').addEventListener('change', () => {
+        
+        document.getElementById('modeArriveeBtn').addEventListener('click', () => {
+            setMode('arrival', true);
+        });
+        
+        document.getElementById('modeDepartBtn').addEventListener('click', () => {
+            setMode('departure', true);
+        });
+        
+        document.getElementById('btnNow').addEventListener('click', () => {
+            setNow();
             if (document.getElementById('selectDepart').value && document.getElementById('selectArrivee').value) {
                 search();
             }
         });
+        
+        document.getElementById('btnRechercher').addEventListener('click', () => search());
+        
+        document.getElementById('allowTransfers').addEventListener('change', () => {
+            if (document.getElementById('selectDepart').value && document.getElementById('selectArrivee').value) {
+                search();
+            } else {
+                updateURL();
+            }
+        });
+        
+        document.getElementById('selectDepart').addEventListener('change', () => updateURL());
+        document.getElementById('selectArrivee').addEventListener('change', () => updateURL());
+        document.getElementById('timeValue').addEventListener('change', () => updateURL());
     });
 </script>
 </body>
