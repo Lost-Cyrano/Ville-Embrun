@@ -11,17 +11,21 @@
         h1{font-size:1.6rem;color:#1e3a5f;margin:0 0 20px 0;}
         .form-group{margin-bottom:18px;}
         label{font-weight:600;display:block;margin-bottom:6px;}
-        select,input{width:100%;padding:12px;border:1px solid #ccd7e4;border-radius:24px;font-size:1rem;}
+        select,input{width:100%;padding:12px;border:1px solid #ccd7e4;border-radius:24px;font-size:1rem;background:white;}
+        select:disabled{background:#f0f0f0;color:#999;}
         .row-2{display:flex;gap:16px;flex-wrap:wrap;}
         .row-2>div{flex:1;}
         button{background:#1e5f7a;color:white;border:none;padding:14px;border-radius:40px;font-weight:bold;width:100%;cursor:pointer;margin-top:12px;}
+        button:disabled{background:#95a5a6;cursor:not-allowed;}
         .resultat-card{background:#f9fbfd;border-radius:20px;padding:16px;margin-bottom:16px;border-left:5px solid #2c7da0;}
         .ligne-badge{background:#d4e3ed;padding:4px 12px;border-radius:30px;font-size:0.75rem;font-weight:bold;display:inline-block;}
         .heures{font-size:1.3rem;font-weight:800;color:#0b5e7e;margin:10px 0;}
         .arrets-inter{background:#eef3fa;padding:8px 12px;border-radius:18px;font-size:0.85rem;margin-top:8px;}
         .correspondance{background:#fff3e0;padding:8px 12px;border-radius:18px;margin:10px 0;border-left:3px solid #f39c12;}
         .aucun{text-align:center;padding:24px;background:#f8e1e1;border-radius:28px;color:#a94442;}
+        .loading{text-align:center;padding:24px;color:#2c7da0;}
         footer{font-size:0.7rem;text-align:center;color:#6c8eae;margin-top:24px;}
+        .success-badge{background:#2ecc71;color:white;padding:2px 10px;border-radius:20px;font-size:0.7rem;margin-left:10px;}
     </style>
 </head>
 <body>
@@ -29,12 +33,16 @@
     <h1>🚌 Recherche navette <span style="font-size:0.8rem;">(arrivée avant H)</span></h1>
 
     <div class="form-group">
-        <label>🚉 Départ</label>
-        <select id="selectDepart"></select>
+        <label>🚉 Station de départ</label>
+        <select id="selectDepart" disabled>
+            <option value="">Chargement des données...</option>
+        </select>
     </div>
     <div class="form-group">
-        <label>🏁 Arrivée</label>
-        <select id="selectArrivee"></select>
+        <label>🏁 Station d'arrivée</label>
+        <select id="selectArrivee" disabled>
+            <option value="">Chargement des données...</option>
+        </select>
     </div>
     <div class="row-2">
         <div>
@@ -42,8 +50,10 @@
             <input type="time" id="heureArrivee" value="12:00">
         </div>
     </div>
-    <button id="btnRechercher">🔍 Trouver 4 trajets (arrivée avant heure)</button>
-    <div id="resultats"></div>
+    <button id="btnRechercher" disabled>🔍 Trouver 4 trajets (arrivée avant heure)</button>
+    <div id="resultats">
+        <div class="loading">⏳ Chargement des horaires en cours...</div>
+    </div>
     <footer>⚠️ Gère les changements de ligne automatiquement. Heure d'arrivée calculée depuis les horaires réels.</footer>
 </div>
 
@@ -52,47 +62,81 @@
     let tousLesArrets = [];
 
     async function chargerJSON() {
-        const res = await fetch('horaires.json');
-        data = await res.json();
-        tousLesArrets = data.arrets;
-        const selectD = document.getElementById('selectDepart');
-        const selectA = document.getElementById('selectArrivee');
-        tousLesArrets.forEach(arret => {
-            selectD.innerHTML += `<option value="${arret}">${arret}</option>`;
-            selectA.innerHTML += `<option value="${arret}">${arret}</option>`;
-        });
+        try {
+            console.log("Chargement de horaires.json...");
+            const response = await fetch('horaires.json');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status} - Fichier horaires.json introuvable`);
+            }
+            data = await response.json();
+            console.log("JSON chargé avec succès", data);
+            
+            // Extraire tous les arrêts uniques
+            tousLesArrets = data.arrets || [];
+            
+            // Remplir les menus déroulants
+            const selectD = document.getElementById('selectDepart');
+            const selectA = document.getElementById('selectArrivee');
+            
+            selectD.innerHTML = '<option value="">-- Choisir départ --</option>';
+            selectA.innerHTML = '<option value="">-- Choisir arrivée --</option>';
+            
+            tousLesArrets.forEach(arret => {
+                selectD.innerHTML += `<option value="${arret}">${arret}</option>`;
+                selectA.innerHTML += `<option value="${arret}">${arret}</option>`;
+            });
+            
+            // Activer les menus et le bouton
+            selectD.disabled = false;
+            selectA.disabled = false;
+            document.getElementById('btnRechercher').disabled = false;
+            document.getElementById('resultats').innerHTML = '<div style="text-align:center; color:#2c7da0;">✅ Données chargées. Sélectionnez départ, arrivée et heure.</div>';
+            
+        } catch (error) {
+            console.error("Erreur chargement:", error);
+            document.getElementById('resultats').innerHTML = `<div class="aucun">❌ Impossible de charger horaires.json. Vérifiez que le fichier est présent à la racine du site.</div>`;
+            document.getElementById('selectDepart').innerHTML = '<option value="">Erreur de chargement</option>';
+            document.getElementById('selectArrivee').innerHTML = '<option value="">Erreur de chargement</option>';
+        }
     }
 
-    function heureToMinutes(h){ if(!h) return -1; let [hh,mm]=h.split(':'); return parseInt(hh)*60+parseInt(mm); }
-    function minutesToHeure(m){ let h=Math.floor(m/60); let mm=m%60; return `${h.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`; }
+    function heureToMinutes(h) { 
+        if(!h) return -1; 
+        let parts = h.split(':'); 
+        if(parts.length < 2) return -1;
+        return parseInt(parts[0])*60 + parseInt(parts[1]); 
+    }
+    
+    function minutesToHeure(m) { 
+        let h = Math.floor(m/60); 
+        let mm = m%60; 
+        return `${h.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`; 
+    }
 
-    // Trouver tous les chemins possibles (avec correspondances)
-    function trouverTousChemins(depart, arrivee, heureLimiteArriveeMinutes){
-        // On explore tous les trajets possibles max 2 correspondances
+    // Trouver tous les chemins possibles (directs et avec correspondances)
+    function trouverTousChemins(depart, arrivee, heureLimiteArriveeMinutes) {
         let solutions = [];
 
-        // Pour chaque sens de chaque ligne
-        for(let ligne of data.lignes){
-            for(let sens of ligne.sens){
+        // 1. Trajets directs
+        for(let ligne of data.lignes) {
+            for(let sens of ligne.sens) {
                 const idxDep = sens.arrets.indexOf(depart);
                 const idxArr = sens.arrets.indexOf(arrivee);
-                if(idxDep !== -1 && idxArr !== -1 && idxDep < idxArr){
-                    // Trajet direct
+                if(idxDep !== -1 && idxArr !== -1 && idxDep < idxArr) {
                     const horairesDep = sens.horaires[depart];
-                    if(horairesDep){
-                        for(let hdep of horairesDep){
+                    if(horairesDep) {
+                        for(let hdep of horairesDep) {
                             let minuteDep = heureToMinutes(hdep);
-                            // estimer heure arrivée : on prend le dernier horaire de l'arrivée >= départ
                             const horairesArr = sens.horaires[arrivee];
                             let meilleureArrivee = null;
-                            for(let harr of horairesArr){
+                            for(let harr of horairesArr) {
                                 let minArr = heureToMinutes(harr);
-                                if(minArr >= minuteDep){
+                                if(minArr >= minuteDep) {
                                     meilleureArrivee = minArr;
                                     break;
                                 }
                             }
-                            if(meilleureArrivee && meilleureArrivee <= heureLimiteArriveeMinutes){
+                            if(meilleureArrivee && meilleureArrivee <= heureLimiteArriveeMinutes) {
                                 solutions.push({
                                     type: "direct",
                                     ligne: ligne.nom,
@@ -111,59 +155,70 @@
             }
         }
 
-        // Correspondances : recherche de point de correspondance (une gare commune)
-        for(let ligne1 of data.lignes){
-            for(let sens1 of ligne1.sens){
+        // 2. Correspondances (1 changement maximum)
+        for(let ligne1 of data.lignes) {
+            for(let sens1 of ligne1.sens) {
                 const idxDep = sens1.arrets.indexOf(depart);
                 if(idxDep === -1) continue;
                 const horairesDep = sens1.horaires[depart];
                 if(!horairesDep) continue;
-                for(let hdep of horairesDep){
+                
+                for(let hdep of horairesDep) {
                     let minuteDep = heureToMinutes(hdep);
-                    // Parcourir tous les arrêts après depart sur sens1 comme point de correspondance
-                    for(let i=idxDep+1; i<sens1.arrets.length; i++){
+                    
+                    // Parcourir tous les arrêts après depart comme point de correspondance
+                    for(let i = idxDep + 1; i < sens1.arrets.length; i++) {
                         let correspondance = sens1.arrets[i];
-                        // trouver l'heure d'arrivée à ce point de correspondance
                         let horairesCorres = sens1.horaires[correspondance];
                         if(!horairesCorres) continue;
+                        
                         let minuteArriveeCorres = null;
-                        for(let hcor of horairesCorres){
+                        for(let hcor of horairesCorres) {
                             let mcor = heureToMinutes(hcor);
-                            if(mcor >= minuteDep){
+                            if(mcor >= minuteDep) {
                                 minuteArriveeCorres = mcor;
                                 break;
                             }
                         }
                         if(!minuteArriveeCorres) continue;
-                        // Maintenant, chercher une ligne 2 qui part de correspondance vers arrivee
-                        for(let ligne2 of data.lignes){
-                            for(let sens2 of ligne2.sens){
+                        
+                        // Chercher une ligne 2 qui part de correspondance vers arrivee
+                        for(let ligne2 of data.lignes) {
+                            for(let sens2 of ligne2.sens) {
                                 const idxCorres = sens2.arrets.indexOf(correspondance);
                                 const idxArr = sens2.arrets.indexOf(arrivee);
-                                if(idxCorres !== -1 && idxArr !== -1 && idxCorres < idxArr){
-                                    // heure de départ possible depuis correspondance >= minuteArriveeCorres
+                                if(idxCorres !== -1 && idxArr !== -1 && idxCorres < idxArr) {
                                     let horairesDepCorres = sens2.horaires[correspondance];
                                     if(!horairesDepCorres) continue;
-                                    for(let hdep2 of horairesDepCorres){
+                                    
+                                    for(let hdep2 of horairesDepCorres) {
                                         let minuteDep2 = heureToMinutes(hdep2);
-                                        if(minuteDep2 >= minuteArriveeCorres){
+                                        if(minuteDep2 >= minuteArriveeCorres) {
                                             let horairesArrFinal = sens2.horaires[arrivee];
-                                            for(let harr of horairesArrFinal){
+                                            for(let harr of horairesArrFinal) {
                                                 let minuteArrFinal = heureToMinutes(harr);
-                                                if(minuteArrFinal >= minuteDep2 && minuteArrFinal <= heureLimiteArriveeMinutes){
-                                                    solutions.push({
-                                                        type: "correspondance",
-                                                        ligne1: ligne1.nom, sens1: sens1.direction,
-                                                        ligne2: ligne2.nom, sens2: sens2.direction,
-                                                        correspondance: correspondance,
-                                                        depart: depart, arrivee: arrivee,
-                                                        heureDepart: hdep,
-                                                        heureCorrespondanceArrivee: minutesToHeure(minuteArriveeCorres),
-                                                        heureCorrespondanceDepart: hdep2,
-                                                        heureArrivee: minutesToHeure(minuteArrFinal),
-                                                        arretsInter1: sens1.arrets.slice(idxDep+1, i),
-                                                        arretsInter2: sens2.arrets.slice(idxCorres+1, idxArr)
-                                                    });
+                                                if(minuteArrFinal >= minuteDep2 && minuteArrFinal <= heureLimiteArriveeMinutes) {
+                                                    // Éviter les doublons (même trajet avec mêmes horaires)
+                                                    const key = `${hdep}|${hdep2}|${harr}`;
+                                                    if(!solutions.some(s => s.key === key)) {
+                                                        solutions.push({
+                                                            key: key,
+                                                            type: "correspondance",
+                                                            ligne1: ligne1.nom, 
+                                                            sens1: sens1.direction,
+                                                            ligne2: ligne2.nom, 
+                                                            sens2: sens2.direction,
+                                                            correspondance: correspondance,
+                                                            depart: depart, 
+                                                            arrivee: arrivee,
+                                                            heureDepart: hdep,
+                                                            heureCorrespondanceArrivee: minutesToHeure(minuteArriveeCorres),
+                                                            heureCorrespondanceDepart: hdep2,
+                                                            heureArrivee: minutesToHeure(minuteArrFinal),
+                                                            arretsInter1: sens1.arrets.slice(idxDep+1, i),
+                                                            arretsInter2: sens2.arrets.slice(idxCorres+1, idxArr)
+                                                        });
+                                                    }
                                                     break;
                                                 }
                                             }
@@ -179,35 +234,36 @@
         }
 
         // Trier par heure d'arrivée, garder les 4 meilleurs
-        solutions.sort((a,b)=> heureToMinutes(a.heureArrivee) - heureToMinutes(b.heureArrivee));
+        solutions.sort((a,b) => heureToMinutes(a.heureArrivee) - heureToMinutes(b.heureArrivee));
         return solutions.slice(0,4);
     }
 
-    function afficher(solutions){
+    function afficher(solutions) {
         const div = document.getElementById('resultats');
-        if(!solutions.length){
+        if(!solutions.length) {
             div.innerHTML = '<div class="aucun">❌ Aucun trajet permettant d’arriver avant l’heure demandée.</div>';
             return;
         }
-        let html = '';
-        for(let s of solutions){
-            if(s.type === "direct"){
+        
+        let html = '<h3 style="margin-top:0;">✨ Trajets trouvés</h3>';
+        for(let s of solutions) {
+            if(s.type === "direct") {
                 html += `
                     <div class="resultat-card">
                         <div><span class="ligne-badge">🚌 ${s.ligne}</span> — Direct</div>
                         <div class="heures">🕒 Départ ${s.heureDepart} → Arrivée ${s.heureArrivee}</div>
                         <div>📍 ${s.depart} → ${s.arrivee}</div>
-                        <div class="arrets-inter">🚏 ${s.nbArrets} arrêt(s) : ${s.arretsInter.join(' → ') || 'Aucun'}</div>
+                        <div class="arrets-inter">🚏 ${s.nbArrets} arrêt(s) : ${s.arretsInter.join(' → ') || 'Aucun arrêt intermédiaire'}</div>
                     </div>
                 `;
             } else {
                 html += `
                     <div class="resultat-card">
-                        <div><span class="ligne-badge">🚌 ${s.ligne1}</span> puis <span class="ligne-badge">🚌 ${s.ligne2}</span></div>
+                        <div><span class="ligne-badge">🚌 ${s.ligne1}</span> puis <span class="ligne-badge">🚌 ${s.ligne2}</span> — Correspondance à <strong>${s.correspondance}</strong></div>
                         <div class="heures">🕒 Départ ${s.heureDepart} → Arrivée ${s.heureArrivee}</div>
                         <div>📍 ${s.depart} → ${s.correspondance} (arrivée ${s.heureCorrespondanceArrivee}, départ ${s.heureCorrespondanceDepart}) → ${s.arrivee}</div>
-                        ${s.arretsInter1.length ? `<div class="arrets-inter">🚏 1er trajet : ${s.arretsInter1.join(' → ')}</div>` : ''}
-                        ${s.arretsInter2.length ? `<div class="arrets-inter">🚏 2e trajet : ${s.arretsInter2.join(' → ')}</div>` : ''}
+                        ${s.arretsInter1.length ? `<div class="arrets-inter">🚏 1er trajet (${s.ligne1}) : ${s.arretsInter1.join(' → ')}</div>` : ''}
+                        ${s.arretsInter2.length ? `<div class="arrets-inter">🚏 2e trajet (${s.ligne2}) : ${s.arretsInter2.join(' → ')}</div>` : ''}
                     </div>
                 `;
             }
@@ -215,20 +271,38 @@
         div.innerHTML = html;
     }
 
-    async function rechercher(){
-        if(!data){ await chargerJSON(); }
+    async function rechercher() {
+        if(!data) {
+            document.getElementById('resultats').innerHTML = '<div class="aucun">Chargement des données en cours, veuillez réessayer...</div>';
+            return;
+        }
+        
         const depart = document.getElementById('selectDepart').value;
         const arrivee = document.getElementById('selectArrivee').value;
         const heureArrivee = document.getElementById('heureArrivee').value;
-        if(!depart || !arrivee || !heureArrivee){
-            alert("Veuillez remplir tous les champs");
+        
+        if(!depart || !arrivee) {
+            alert("Veuillez sélectionner une station de départ et une station d'arrivée");
             return;
         }
+        if(depart === arrivee) {
+            alert("La station de départ et d'arrivée sont identiques");
+            return;
+        }
+        if(!heureArrivee) {
+            alert("Veuillez saisir une heure d'arrivée");
+            return;
+        }
+        
         const solutions = trouverTousChemins(depart, arrivee, heureToMinutes(heureArrivee));
         afficher(solutions);
     }
 
-    window.addEventListener('DOMContentLoaded', ()=>{ chargerJSON(); document.getElementById('btnRechercher').onclick = rechercher; });
+    // Initialisation au chargement de la page
+    window.addEventListener('DOMContentLoaded', () => {
+        chargerJSON();
+        document.getElementById('btnRechercher').onclick = rechercher;
+    });
 </script>
 </body>
 </html>
