@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Navette Municipale - Recherche de trajet</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding: 24px 20px 32px;
+        }
+        h1 {
+            font-size: 1.6rem;
+            margin: 0 0 6px 0;
+            color: #1e3a5f;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        h1 small {
+            font-size: 0.8rem;
+            font-weight: normal;
+            background: #e9ecef;
+            padding: 2px 10px;
+            border-radius: 30px;
+            color: #2c3e66;
+        }
+        .sub {
+            color: #4a627a;
+            margin-bottom: 28px;
+            border-left: 3px solid #2c7da0;
+            padding-left: 12px;
+            font-size: 0.9rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0b3b5f;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border: 1px solid #ccd7e4;
+            border-radius: 20px;
+            background: white;
+            transition: 0.2s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 3px rgba(44,125,160,0.2);
+        }
+        .row-2cols {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .row-2cols > div {
+            flex: 1;
+            min-width: 140px;
+        }
+        button {
+            background: #1e5f7a;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 40px;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            background: #0f445b;
+            transform: scale(0.98);
+        }
+        .resultats {
+            margin-top: 32px;
+            border-top: 2px dashed #cbdde9;
+            padding-top: 20px;
+        }
+        .carte-trajet {
+            background: #f9fbfd;
+            border-radius: 24px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+            border-left: 5px solid #2c7da0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .trajet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .ligne-badge {
+            background: #d4e3ed;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #1e4663;
+        }
+        .heure-depart {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0b5e7e;
+        }
+        .trajet-stations {
+            font-size: 0.95rem;
+            margin: 10px 0;
+            color: #2c3e50;
+        }
+        .arrets-intermediaires {
+            background: #eef3fa;
+            padding: 8px 12px;
+            border-radius: 18px;
+            font-size: 0.85rem;
+            color: #1f5e7e;
+            margin-top: 8px;
+        }
+        .aucun {
+            text-align: center;
+            color: #a94442;
+            background: #f8e1e1;
+            padding: 18px;
+            border-radius: 28px;
+        }
+        footer {
+            margin-top: 28px;
+            font-size: 0.7rem;
+            text-align: center;
+            color: #6c8eae;
+        }
+        hr {
+            margin: 16px 0;
+            border: none;
+            border-top: 1px solid #e2edf2;
+        }
+        @media (max-width: 550px) {
+            body { padding: 12px; }
+            .container { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>
+        🚌 Navette municipale
+        <small>Lignes 1 & 2</small>
+    </h1>
+    <div class="sub">Trouvez vos 4 prochains départs selon votre heure • Arrêts intermédiaires détaillés</div>
+
+    <div class="form-group">
+        <label>🚉 Station de départ</label>
+        <select id="selectDepart"></select>
+    </div>
+
+    <div class="form-group">
+        <label>🏁 Station d'arrivée</label>
+        <select id="selectArrivee"></select>
+    </div>
+
+    <div class="row-2cols">
+        <div>
+            <label>⏱️ Heure de départ (HH:MM)</label>
+            <input type="time" id="heureUser" value="08:30">
+        </div>
+        <div>
+            <label>📅 Jour (ignoré)</label>
+            <input type="text" disabled value="Tous jours / hors contraintes" style="background:#f3f6fa;">
+        </div>
+    </div>
+
+    <button id="btnRechercher">🔍 Rechercher les 4 meilleurs trajets</button>
+
+    <div id="resultatsContainer" class="resultats">
+        <div style="text-align:center; color:#6c8eae;">⏳ Remplissez les champs et cliquez sur rechercher</div>
+    </div>
+    <footer>⚠️ Basé sur les horaires réels (sans distinction jours fériés / saisons) — Prochains déports suivant l'heure donnée.</footer>
+</div>
+
+<script>
+    let horairesData = null;      // stockera le JSON chargé
+    let toutesStations = new Set(); // pour alimenter les selecteurs
+
+    // Fonction pour extraire TOUS les noms d'arrêts uniques depuis le JSON
+    function extraireTousLesArrets(data) {
+        const stations = new Set();
+        for (const ligne of data.lignes) {
+            for (const trajet of ligne.trajets) {
+                for (const arret of trajet.arrets) {
+                    stations.add(arret);
+                }
+            }
+        }
+        return Array.from(stations).sort();
+    }
+
+    // remplir les menus déroulants
+    function remplirSelecteurs(stationsListe) {
+        const selectDepart = document.getElementById('selectDepart');
+        const selectArrivee = document.getElementById('selectArrivee');
+        selectDepart.innerHTML = '<option value="">-- Choisir départ --</option>';
+        selectArrivee.innerHTML = '<option value="">-- Choisir arrivée --</option>';
+        stationsListe.forEach(station => {
+            const opt1 = document.createElement('option');
+            opt1.value = station;
+            opt1.textContent = station;
+            selectDepart.appendChild(opt1);
+
+            const opt2 = document.createElement('option');
+            opt2.value = station;
+            opt2.textContent = station;
+            selectArrivee.appendChild(opt2);
+        });
+    }
+
+    // Chercher tous les trajets possibles (ligne + sens) qui contiennent depart puis arrivée dans l'ordre
+    function trouverTrajetsPossibles(data, depart, arrivee) {
+        const resultats = [];
+        for (const ligne of data.lignes) {
+            for (const trajet of ligne.trajets) {
+                const arrets = trajet.arrets;
+                const idxDepart = arrets.indexOf(depart);
+                const idxArrivee = arrets.indexOf(arrivee);
+                if (idxDepart !== -1 && idxArrivee !== -1 && idxDepart < idxArrivee) {
+                    // trajet valide dans ce sens
+                    const arretsIntermediaires = arrets.slice(idxDepart + 1, idxArrivee);
+                    resultats.push({
+                        ligneNom: ligne.nom,
+                        ligneId: ligne.id,
+                        trajetId: trajet.id,
+                        direction: trajet.direction,
+                        arretsComplets: arrets,
+                        idxDepart: idxDepart,
+                        idxArrivee: idxArrivee,
+                        depart: depart,
+                        arrivee: arrivee,
+                        arretsIntermediaires: arretsIntermediaires,
+                        horairesParArret: trajet.horaires
+                    });
+                }
+            }
+        }
+        return resultats;
+    }
+
+    // Convertit "08:30" en nombre de minutes depuis minuit
+    function heureEnMinutes(heureStr) {
+        if (!heureStr) return -1;
+        const [h, m] = heureStr.split(':').map(Number);
+        return h * 60 + m;
+    }
+
+    // Pour un trajet donné, récupère les prochains horaires de départ (max 4) postérieurs à heureMin
+    function prochainsDeparts(trajet, heureMinMinutes) {
+        const horairesList = trajet.horairesParArret[trajet.depart];
+        if (!horairesList || horairesList.length === 0) return [];
+
+        const minutesList = horairesList.map(h => heureEnMinutes(h)).filter(m => m >= heureMinMinutes);
+        minutesList.sort((a,b) => a-b);
+        // on garde les 4 premiers
+        const topMinutes = minutesList.slice(0,4);
+        // re-transform en string HH:MM pour affichage
+        return topMinutes.map(m => {
+            const h = Math.floor(m/60);
+            const min = m % 60;
+            return `${h.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}`;
+        });
+    }
+
+    // Afficher les résultats dans le DOM
+    function afficherResultats(trajetsPossibles, heureDepartStr) {
+        const container = document.getElementById('resultatsContainer');
+        if (!trajetsPossibles || trajetsPossibles.length === 0) {
+            container.innerHTML = `<div class="aucun">❌ Aucun trajet trouvé entre ces deux stations dans l'ordre de parcours.<br>Vérifiez que la station d'arrivée se trouve bien APRÈS la station de départ sur une ligne.</div>`;
+            return;
+        }
+
+        const heureMin = heureEnMinutes(heureDepartStr);
+        if (heureMin === -1) {
+            container.innerHTML = `<div class="aucun">⏰ Heure invalide.</div>`;
+            return;
+        }
+
+        // Structure pour collecter les candidats (trajet + prochains départs)
+        let tousCandidats = [];
+
+        for (const trajet of trajetsPossibles) {
+            const prochains = prochainsDeparts(trajet, heureMin);
+            for (const heureDep of prochains) {
+                tousCandidats.push({
+                    trajet: trajet,
+                    heureDepart: heureDep,
+                    heureMinute: heureEnMinutes(heureDep)
+                });
+            }
+        }
+
+        // Trier par heure de départ croissante
+        tousCandidats.sort((a,b) => a.heureMinute - b.heureMinute);
+
+        // Prendre les 4 premiers (ou moins s'il y en a moins)
+        const meilleurs = tousCandidats.slice(0,4);
+
+        if (meilleurs.length === 0) {
+            container.innerHTML = `<div class="aucun">🕒 Aucun départ après ${heureDepartStr} trouvé pour ce trajet.</div>`;
+            return;
+        }
+
+        // Génération HTML
+        let html = `<div style="margin-bottom:12px;"><strong>✨ ${meilleurs.length} trajet(s) disponible(s) après ${heureDepartStr}</strong></div>`;
+        for (let idx = 0; idx < meilleurs.length; idx++) {
+            const item = meilleurs[idx];
+            const t = item.trajet;
+            const nbArretsInter = t.arretsIntermediaires.length;
+            const listeArretsNoms = t.arretsIntermediaires.join(' → ') || 'Aucun arrêt intermédiaire';
+            const directionTexte = t.direction.includes('→') ? t.direction : `${t.depart} → ${t.arrivee}`;
+            
+            html += `
+                <div class="carte-trajet">
+                    <div class="trajet-header">
+                        <span class="ligne-badge">🚌 ${t.ligneNom} (${t.ligneId})</span>
+                        <span class="heure-depart">Départ ${item.heureDepart}</span>
+                    </div>
+                    <div class="trajet-stations">
+                        📍 <strong>${t.depart}</strong> → <strong>${t.arrivee}</strong><br>
+                        🧭 Sens : ${directionTexte}
+                    </div>
+                    <div class="arrets-intermediaires">
+                        🚏 ${nbArretsInter} arrêt(s) intermédiaire(s) : ${listeArretsNoms}
+                    </div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    // Fonction principale de recherche appelée par le bouton
+    function rechercherTrajet() {
+        if (!horairesData) {
+            document.getElementById('resultatsContainer').innerHTML = `<div class="aucun">Chargement des données en cours, veuillez réessayer...</div>`;
+            return;
+        }
+        const depart = document.getElementById('selectDepart').value;
+        const arrivee = document.getElementById('selectArrivee').value;
+        const heureUser = document.getElementById('heureUser').value;
+
+        if (!depart || !arrivee) {
+            document.getElementById('resultatsContainer').innerHTML = `<div class="aucun">Veuillez sélectionner une station de départ ET une station d'arrivée.</div>`;
+            return;
+        }
+        if (depart === arrivee) {
+            document.getElementById('resultatsContainer').innerHTML = `<div class="aucun">⚠️ La station de départ et d'arrivée sont identiques. Choisissez deux stations différentes.</div>`;
+            return;
+        }
+
+        const trajetsPossibles = trouverTrajetsPossibles(horairesData, depart, arrivee);
+        afficherResultats(trajetsPossibles, heureUser);
+    }
+
+    // Chargement du fichier JSON externe "horaires.json" (doit être à la racine)
+    async function chargerHoraires() {
+        try {
+            const response = await fetch('horaires.json');
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            horairesData = data;
+            const stationsList = extraireTousLesArrets(data);
+            remplirSelecteurs(stationsList);
+            // Optionnel: message de bienvenue
+            console.log("✅ horaires.json chargé avec succès", { nbLignes: data.lignes.length });
+            document.getElementById('resultatsContainer').innerHTML = `<div style="text-align:center; color:#2c7da0;">📅 Données chargées. Sélectionnez départ / arrivée et une heure.</div>`;
+        } catch (err) {
+            console.error("Erreur chargement JSON:", err);
+            document.getElementById('resultatsContainer').innerHTML = `<div class="aucun">⚠️ Impossible de charger horaires.json. Vérifiez que le fichier est bien présent à la racine du site.</div>`;
+        }
+    }
+
+    // Initialisation au chargement de la page
+    window.addEventListener('DOMContentLoaded', () => {
+        chargerHoraires();
+        document.getElementById('btnRechercher').addEventListener('click', rechercherTrajet);
+    });
+</script>
+</body>
+</html>
