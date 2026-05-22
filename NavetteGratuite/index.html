@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Navette municipale - Recherche de trajet</title>
+    <title>Navette municipale d'Embrun</title>
     <style>
         * {
             margin: 0;
@@ -38,12 +38,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-
-        .header p {
-            font-size: 0.85rem;
-            opacity: 0.8;
-            margin-top: 8px;
         }
 
         .search-card {
@@ -498,14 +492,29 @@
             color: #94a3b8;
             margin-top: 24px;
             padding: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        footer a {
+            color: #1e5f7a;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .disclaimer {
+            font-size: 0.65rem;
+            margin-top: 8px;
+            color: #cbd5e1;
         }
     </style>
 </head>
 <body>
 <div class="app">
     <div class="header">
-        <h1>🚌 Navette municipale</h1>
-        <p>Lignes 1 & 2 • Mode départ ou arrivée • Partagez un trajet spécifique</p>
+        <h1>🚌 Navette municipale d'Embrun</h1>
     </div>
 
     <div class="search-card">
@@ -546,7 +555,12 @@
     <div id="resultsArea">
         <div class="loading">⏳ Chargement des horaires...</div>
     </div>
-    <footer>⚠️ Marge de sécurité de 5 min pour les correspondances • Cliquez sur un trajet pour voir les détails • <strong>Partagez un trajet via le bouton 📤</strong></footer>
+
+    <footer>
+        <div>© MAIRE Anael - Tous droits réservés</div>
+        <div>Horaires officiels : <a href="https://www.ville-embrun.fr/navette-gratuite-embrun" target="_blank">www.ville-embrun.fr/navette-gratuite-embrun</a></div>
+        <div class="disclaimer">⚠️ Les horaires sont donnés à titre indicatif. Aucune responsabilité ne pourra être engagée en cas de retard, modification ou suppression des services.</div>
+    </footer>
 </div>
 
 <script>
@@ -557,7 +571,6 @@
     let currentMode = 'arrival';
     const STEP = 4;
 
-    // Gestion de l'URL
     function updateURL(tripIndex = null) {
         const depart = document.getElementById('selectDepart').value;
         const arrivee = document.getElementById('selectArrivee').value;
@@ -608,7 +621,6 @@
             document.getElementById('allowTransfers').checked = true;
         }
         
-        // Si tout est rempli, lancer la recherche
         if (depart && arrivee && time) {
             setTimeout(() => {
                 search(tripIndex ? parseInt(tripIndex) : null);
@@ -639,7 +651,6 @@
             
             loadFromURL();
         } catch(e) {
-            console.error(e);
             document.getElementById('resultsArea').innerHTML = '<div class="empty-state">❌ Erreur: horaires.json manquant</div>';
         }
     }
@@ -717,7 +728,6 @@
         return stops;
     }
 
-    // Mode départ
     function findDirectTripsByDeparture(depart, arrivee, minDepartureMinutes) {
         let trips = [];
         for (let ligne of data.lignes) {
@@ -849,7 +859,6 @@
         return trips;
     }
 
-    // Mode arrivée
     function findDirectTripsByArrival(depart, arrivee, maxArrivalMinutes) {
         let trips = [];
         for (let ligne of data.lignes) {
@@ -1086,10 +1095,8 @@
     function shareTrip(tripIndex, event) {
         event.stopPropagation();
         updateURL(tripIndex);
-        // Copier dans le presse-papier
         const url = window.location.href;
         navigator.clipboard.writeText(url).then(() => {
-            // Feedback visuel
             const btn = event.target;
             const originalText = btn.innerText;
             btn.innerText = '✅ Copié !';
@@ -1124,7 +1131,7 @@
         for (let idx = 0; idx < toShow.length; idx++) {
             const trip = toShow[idx];
             const uniqueId = `trip-${idx}-${Date.now()}`;
-            const globalIndex = idx; // index dans la liste affichée (0-based)
+            const globalIndex = idx;
             const isHighlighted = (highlightTripIndex !== null && globalIndex === highlightTripIndex);
             
             if (trip.type === 'direct') {
@@ -1221,7 +1228,6 @@
             displayTrips(trips, targetTimeStr, mode, highlightTripIndex);
         });
         
-        // Scroll jusqu'au trajet mis en évidence si présent
         if (highlightTripIndex !== null && highlightTripIndex < toShow.length) {
             const highlightedCard = document.querySelector(`.trajet-card[style*="border: 2px solid #f59e0b"]`);
             if (highlightedCard) {
@@ -1273,13 +1279,11 @@
         displayedCount = STEP;
         displayTrips(allSolutions, timeValue, currentMode, highlightTripIndex);
         
-        // Mettre à jour l'URL sans l'index si on est en train de faire une nouvelle recherche
         if (highlightTripIndex === null) {
             updateURL();
         }
     }
     
-    // Event listeners
     window.addEventListener('DOMContentLoaded', () => {
         loadData();
         
